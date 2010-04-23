@@ -37,7 +37,7 @@ supported:</p>
 
 <p>
 <ul>
-<li>s: array of services to list. Values can be 'twitter', 'hunch', 'facebook', or 'google' (defaults to all services).</li>
+<li>s: array of services to list. Values can be 'digg', 'stumbleupon', 'hunch', 'facebook', or 'reddit' (defaults to all services).</li>
 <li>title: string to display above widget icons (defaults to 'like this')</li>
 <li>url: the url the user is liking (defaults to current page url). This is useful if you have several things on a page that people might like, such as blog snippets.</li>
 <ul>
