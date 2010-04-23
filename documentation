@@ -39,7 +39,7 @@ then calling OPENLIKE.Widget(). Multiple widgets can be embedded in the same pag
 <li>header: string to display above widget icons (defaults to 'Like this:')</li>
 <li>url: the url of the object the user is liking (defaults to current page url). This is useful if you have several things on a page that people might like, such as blog snippets.</li>
 <li>title: the title of the object the user is liking (default to current page title).</li>
-<ul>
+</ul>
 
 <p>Known issues can be found on the <a href="http://code.google.com/p/openlike/issues/list">open like google code page</a></p>
 
