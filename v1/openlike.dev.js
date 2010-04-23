@@ -38,15 +38,17 @@ if (!OPENLIKE.Widget) {
 	OPENLIKE.Widget = function(cfg) {
 		// Params for cfg
 		//
-		//   url -- string -- the url to share
-		//   s -- array -- list of sites to share to
-		//   title -- the title text (or none) to give the widget (default 'Like this:')
+		//   header -- the header text (or none) to give the widget (default 'Like this:')
+		//   s -- array -- list of sites to share to (has a default)
 		//   css -- string (or false) -- url for the css (optional, *only used in first OPENLIKE.Widget call*)
-		//   type -- string -- the type of this object, e.g. product, activity, sport, bar, company (optional)
+		//   url -- string -- the url of the object to like (default window.location.href)
+		//   title -- string -- the title of the object to like (default document.title)
+		//   type -- string -- the type of the object to like, e.g. product, activity, sport, bar, company (optional)
 		var defaults = {
 				s: ['facebook', 'hunch', 'digg', 'reddit', 'stumbleupon'],
 				url: window.location.href,
-				title: 'Like this:',
+				title: document.title,
+				header: 'Like this:',
 				css: OPENLIKE.assetHost + '/v1/openlike.css',
 				category: ''
 			},
@@ -73,9 +75,9 @@ if (!OPENLIKE.Widget) {
 		// Build Widget
 		wrapper = document.createElement('DIV');
 		wrapper.className = 'openlike';
-		if (cfg.title) {
+		if (cfg.header) {
 			title = document.createElement('P');
-			title.innerHTML = OPENLIKE.util.escape(cfg.title);
+			title.innerHTML = OPENLIKE.util.escape(cfg.header);
 			wrapper.appendChild(title);
 		}
 
@@ -135,9 +137,9 @@ if (!OPENLIKE.Widget) {
 		digg: {
 			url: 'http://digg.com/',
 			basicLink: function(a, cfg) {
-				var url = cfg.url,
-					title = document.title;
-				return 'http://digg.com/submit?phase=2&url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title);
+				var url = encodeURIComponent(cfg.url),
+					title = encodeURIComponent(cfg.title);
+				return 'http://digg.com/submit?phase=2&url=' + url + '&title=' + title;
 			},
 			title: 'Like this on Digg'
 		},
@@ -153,28 +155,28 @@ if (!OPENLIKE.Widget) {
 			},
 			url: 'http://facebook.com',
 			basicLink: function(a, cfg) {
-				var url = cfg.url,
-					title = document.title;
-				return 'http://www.facebook.com/sharer.php?u=' + encodeURIComponent(url) + '&t=' + encodeURIComponent(title);
+				var url = encodeURIComponent(cfg.url),
+					title = encodeURIComponent(cfg.title);
+				return 'http://www.facebook.com/sharer.php?u=' + url + '&t=' + title;
 			}
 		},
 		google: {
 			url: 'http://google.com',
 			basicLink: function(a, cfg) {
-				var url = cfg.url,
-					msg = 'I like this... ' + document.title;
+				var url = encodeURIComponent(cfg.url),
+					msg = encodeURIComponent('I like this... ' + cfg.title);
 					// add srcURL too?
-				return 'http://www.google.com/buzz/post?message=' + encodeURIComponent(msg) + '&url=' + encodeURIComponent(url);
+				return 'http://www.google.com/buzz/post?message=' + msg + '&url=' + url;
 			},
 			title: 'Like this on Google Buzz'
 		},
 		hunch: {
 			url: 'http://hunch.com',
 			basicLink: function(a, cfg) {
-				var url = cfg.url,
-					title = document.title,
-					category = cfg.type;
-				return 'http://hunch.com/openlike/?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title) + (category ? '&category=' + encodeURIComponent(category) : '');
+				var url = encodeURIComponent(cfg.url),
+					title = encodeURIComponent(cfg.title),
+					category = cfg.type ? '&category=' + encodeURIComponent(cfg.type) : '';
+				return 'http://hunch.com/openlike/?url=' + url + '&title=' + title + category;
 			},
 			popup: {
 				target: '_blank',
@@ -185,25 +187,25 @@ if (!OPENLIKE.Widget) {
 		reddit: {
 			url: 'http://reddit.com/',
 			basicLink: function(a, cfg) {
-				var url = cfg.url,
-					title = document.title;
-				return 'http://www.reddit.com/submit?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title);
+				var url = encodeURIComponent(cfg.url),
+					title = encodeURIComponent(cfg.title);
+				return 'http://www.reddit.com/submit?url=' + url + '&title=' + title;
 			},
 			title: 'Like this on Reddit'
 		},
 		stumbleupon: {
 			url: 'http://www.stumbleupon.com/',
 			basicLink: function(a, cfg) {
-				var url = cfg.url;
-				return 'http://www.stumbleupon.com/submit?url=' + encodeURIComponent(url);
+				var url = encodeURIComponent(cfg.url);
+				return 'http://www.stumbleupon.com/submit?url=' + url;
 			},
 			title: 'Like this on StumbleUpon'
 		},
 		twitter: {
 			url: 'http://twitter.com',
 			basicLink: function(a, cfg) {
-				var msg = 'I like this: ' + cfg.url + ' #openlike';
-				return 'http://twitter.com/home?status=' + encodeURIComponent(msg);
+				var msg = encodeURIComponent('I like this: ' + cfg.url + ' #openlike');
+				return 'http://twitter.com/home?status=' + msg;
 			},
 			title: 'Tweet this like'
 		}

@@ -22,8 +22,8 @@
 </ul>
 </div>
 </div>
-      
-<div class="span-18"> 
+
+<div class="span-18">
 
 <p> V1 of OpenLike provides a user interface to
 easily give your users a simple way to chose which services they
@@ -32,18 +32,18 @@ provide their like/dislike data.</p>
 <p> A widget is created by first loading the OpenLike javascript and
 then calling OPENLIKE.Widget(). Multiple widgets can be embedded in the same page, each with different options.<p>
 
-<p>If you want to customize the widget the following arguments are
-supported:</p>
+<p>If you want to customize the widget the following arguments are supported:</p>
 
 <p>
 <ul>
 <li>s: array of services to list. Values can be 'digg', 'stumbleupon', 'hunch', 'facebook', or 'reddit' (defaults to all services).</li>
-<li>title: string to display above widget icons (defaults to 'like this')</li>
-<li>url: the url the user is liking (defaults to current page url). This is useful if you have several things on a page that people might like, such as blog snippets.</li>
+<li>header: string to display above widget icons (defaults to 'Like this:')</li>
+<li>url: the url of the object the user is liking (defaults to current page url). This is useful if you have several things on a page that people might like, such as blog snippets.</li>
+<li>title: the title of the object the user is liking (default to current page title).</li>
 <ul>
 </p>
 
-</div>	
+</div>
 <div id="footer" class="column span-18 prepend-1 append-1 first last">
 OpenLike is an open project being developed by a <a href="http://groups.google.com/group/openlike">group of people</a>.
 </div>
