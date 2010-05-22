@@ -60,11 +60,12 @@ if (!OPENLIKE.Widget) {
 		
 		// Determine, of the defaults, which to use
 		// in this order: xauthed, viewed, default
-		var onlyXauthedServices = xauth.getOnlyXauthedServices(cfg.s);
-		if(onlyXauthedServices)
-			xauth.checkServices(onlyXauthedServices, function(verifiedSources) {
+		var xauthed_services = xauth.getAvailableServices(cfg.s);
+		if(xauthed_services) {
+			xauth.checkServices(xauthed_services, function(verifiedSources) {
 				console.log(verifiedSources);
 			});
+		}
 		
 
 		// Add CSS

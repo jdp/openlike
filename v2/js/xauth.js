@@ -1,10 +1,16 @@
 var xauth = new function() {
 	
-	this.getOnlyXauthedServices = function(services) {
+	/*
+	 * Takes an array of service names, and gives back the names of the given
+	 * services that can be authenticated through XAuth.
+	 * @param Array<String> services The names of the services to check for XAuth authentication ability
+	 * @return Array<String> The names of the services that can be authenticated through XAuth
+	 */
+	this.getAvailableServices = function(services) {
 		return $.map(services, function(e, i) {
-			var source = OPENLIKE.Sources[e];
-			if(source.xauth)
-				return source;
+			if(OPENLIKE.Sources[e].xauth) {
+				return e;
+			}
 		});
 	}
 	

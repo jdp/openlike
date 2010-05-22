@@ -1,8 +1,8 @@
-var OPENLIKE.Preferences = new function() {
+OPENLIKE.Preferences = new function() {
 	
 	this.storage = function() {
 		return globalStorage[''].openlike? JSON.parse(globalStorage[''].openlike): {};
-	}
+	};
 	
 	/*
 	 * Returns an array of services that are authenticated for
@@ -18,7 +18,7 @@ var OPENLIKE.Preferences = new function() {
 	/*
 	 * Actually performs writes to client-side storage.
 	 * @param String vertical The vertical to save to
-	 * @param String services The services to save to the vertical
+	 * @param Array<String> services The services to save to the vertical
 	 * @return Boolean
 	 */
 	this.put = function(vertical, services) {
@@ -50,8 +50,9 @@ var OPENLIKE.Preferences = new function() {
 	 * @return Boolean Whether or not the service was removed from the vertical
 	 */
 	this.hide = function(vertical, service) {
-		var stored = OPENLIKE.Preferences.get(vertical);
-		if ((var index = stored.indexOf(service)) > -1) {
+		var stored = OPENLIKE.Preferences.get(vertical),
+		    index;
+		if ((index = stored.indexOf(service)) > -1) {
 			stored.splice(index, 1);
 			return OPENLIKE.Preferences.put(vertical, stored);
 		}
