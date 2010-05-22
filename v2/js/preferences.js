@@ -1,0 +1,61 @@
+var OPENLIKE.Preferences = new function() {
+	
+	this.storage = function() {
+		return globalStorage[''].openlike? JSON.parse(globalStorage[''].openlike): {};
+	}
+	
+	/*
+	 * Returns an array of services that are authenticated for
+	 * a given vertical.
+	 * @param String vertical The vertical to check for authed services
+	 * @return Array<String> Array of services
+	 */
+	this.get = function(vertical) {
+		var storage = OPENLIKE.Preferences.storage;
+		return storage[vertical]? storage[vertical]: [];
+	};
+	
+	/*
+	 * Actually performs writes to client-side storage.
+	 * @param String vertical The vertical to save to
+	 * @param String services The services to save to the vertical
+	 * @return Boolean
+	 */
+	this.put = function(vertical, services) {
+		var storage = OPENLIKE.Preferences.storage;
+		storage[vertical] = services;
+		globalStorage[''].openlike = JSON.stringify(storage);
+		return true;
+	};
+	
+	/*
+	 * Shows a service in the given vertical.
+	 * @param String vertical The vertical the service is being added to
+	 * @param String service The service to add to the vertical
+	 * @return Boolean Whether or not the service was added to the vertical
+	 */
+	this.show = function(vertical, service) {
+		var stored = OPENLIKE.Preferences.get(vertical);
+		if (stored.indexOf(service) == -1) {
+			stored.push(service);
+			return OPENLIKE.Preferences.put(vertical, stored);
+		}
+		return false;
+	};
+	
+	/*
+	 * Hides a service from the given vertical.
+	 * @param String vertical The vertical the service is being removed from
+	 * @param String service The service to remove from the vertical
+	 * @return Boolean Whether or not the service was removed from the vertical
+	 */
+	this.hide = function(vertical, service) {
+		var stored = OPENLIKE.Preferences.get(vertical);
+		if ((var index = stored.indexOf(service)) > -1) {
+			stored.splice(index, 1);
+			return OPENLIKE.Preferences.put(vertical, stored);
+		}
+		return false;
+	};
+
+}
