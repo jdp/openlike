@@ -47,7 +47,7 @@ if (!OPENLIKE.Widget) {
 		var defaults = {
 				url: window.location.href,
 				title: document.title,
-				header: 'Like this:',
+				header: 'Like this',
 				css: OPENLIKE.assetHost + '/v1/openlike.css',
 				category: '',
 				s: (function() {
@@ -85,11 +85,17 @@ if (!OPENLIKE.Widget) {
 
 		// Build Widget
 		wrapper = document.createElement('DIV');
+		wrapper.id = 'openlike-widget';
 		wrapper.className = 'openlike';
+		wrapper.setAttribute('data-vertical', cfg.vertical)
 		if (cfg.header) {
 			title = document.createElement('P');
 			title.innerHTML = OPENLIKE.util.escape(cfg.header);
+			edit = document.createElement('a');
+			edit.className = 'edit';
+			edit.appendChild(document.createTextNode('edit'));
 			wrapper.appendChild(title);
+			wrapper.appendChild(edit);
 		}
 
 		list = document.createElement('UL');
