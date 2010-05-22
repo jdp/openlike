@@ -1,0 +1,27 @@
+#openlike-widget {
+	display: inline-block;
+	font-family: arial;
+	background: #3B5998;
+	padding: 10px;
+	-moz-border-radius: 5px;
+}
+
+	#openlike-widget p,
+	#openlike-widget ul {
+		display: block;
+		margin: 0 !important;
+		padding: 0;
+		color: #fff;
+	}
+	
+	#openlike-widget p {
+		margin-bottom: 5px !important;
+	}
+	
+	#openlike-widget a.edit {
+		display: none;
+	}
+	
+#openlike-edit {
+	display: none;
+}
