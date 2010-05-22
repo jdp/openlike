@@ -35,5 +35,10 @@ $(function() {
 			// show panel
 			editPanel.show();
 		});
+		
+		// hide edit panel
+		$(s.editPanel).live('mouseleave', function() {
+			$(this).fadeOut();
+		});
 	
 });
