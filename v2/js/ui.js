@@ -27,7 +27,7 @@ $(function() {
 				serviceNodes = $('li', widget).clone();
 			// if panel doesnt exist yet we need to build it
 			if(!editPanel.size()) {
-				editPanel = $('<div id="openlike-edit">Edit Openlike<ul id="openlike-edit-contents"></ul></div>');
+				editPanel = $('<div id="openlike-edit"><span>Edit Openlike</span><ul id="openlike-edit-contents"></ul></div>');
 				$('body').append(editPanel);
 			}
 			// take the buttons from widget and put them in the panel
@@ -36,9 +36,11 @@ $(function() {
 			editPanel.show();
 		});
 		
-		// hide edit panel
-		$(s.editPanel).live('mouseleave', function() {
-			$(this).fadeOut();
-		});
+		// hedit panel
+		$(s.editPanel)
+			// hide edit panel
+			.live('mouseleave', function() {
+				$(this).fadeOut();
+			});	
 	
 });
