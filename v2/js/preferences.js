@@ -1,7 +1,7 @@
 OPENLIKE.Preferences = new function() {
 	
-	this.storage = function() {
-		return globalStorage[''].openlike? JSON.parse(globalStorage[''].openlike): {};
+	this.getStorage = function() {
+		return localStorage.openlike? JSON.parse(localStorage.openlike): {};
 	};
 	
 	/*
@@ -11,7 +11,8 @@ OPENLIKE.Preferences = new function() {
 	 * @return Array<String> Array of services
 	 */
 	this.get = function(vertical) {
-		var storage = OPENLIKE.Preferences.storage;
+		var storage = OPENLIKE.Preferences.getStorage();
+		console.log('get', vertical, 'storage', storage);
 		return storage[vertical]? storage[vertical]: [];
 	};
 	
@@ -22,9 +23,10 @@ OPENLIKE.Preferences = new function() {
 	 * @return Boolean
 	 */
 	this.put = function(vertical, services) {
-		var storage = OPENLIKE.Preferences.storage;
+		var storage = OPENLIKE.Preferences.getStorage();
+		console.log('put', services, 'in', vertical, 'storage', storage);
 		storage[vertical] = services;
-		globalStorage[''].openlike = JSON.stringify(storage);
+		localStorage.openlike = JSON.stringify(storage);
 		return true;
 	};
 	
