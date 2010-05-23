@@ -172,9 +172,9 @@ if (!OPENLIKE.Widget) {
 	OPENLIKE.Widget = function(cfg) {
 		
 		// Get current script object
-		var url = cfg.url? cfg.url: window.location.href,
-			title = cfg.title? cfg.title: document.title,
-			vertical = cfg.vertical? cfg.vertical: 'default',
+		var url = cfg && cfg.url? cfg.url: window.location.href,
+			title = cfg && cfg.title? cfg.title: document.title,
+			vertical = cfg && cfg.vertical? cfg.vertical: 'default',
 			scriptParent = $('script').eq($('script').size() - 1).parent(),
 			iframe = $('<iframe src="http://localhost/openlike/index.html?url="' + url + '&title=' + title + '&vertical=' + vertical + '></iframe>');
 		scriptParent.prepend(iframe);
@@ -207,7 +207,7 @@ if (!OPENLIKE.Widget) {
 		'movie': [
 			'facebook',
 			'twitter',
-			//'blockbuster',
+			'blockbuster',
 			//'netflix',
 			//'getglue',
 			'hunch'
@@ -297,6 +297,14 @@ if (!OPENLIKE.Widget) {
 				return 'http://www.stumbleupon.com/submit?url=' + url;
 			},
 			title: 'Like this on StumbleUpon'
+		},
+		blockbuster: {
+			url: 'http://www.blockbuster.com/',
+			basicLink: function(a, cfg) {
+				var title = encodeURIComponent(cfg.title);
+				return 'http://www.blockbuster.com/search/product/products?keyword=' + title;
+			},
+			title: 'Search this on Blockbuster'
 		},
 		twitter: {
 			url: 'http://twitter.com',
