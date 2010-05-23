@@ -58,82 +58,97 @@ if (!OPENLIKE.Widget) {
 			css;
 		cfg = OPENLIKE.util.update(defaults, cfg);
 		
-		// Determine, of the defaults, which to use
-		// in this order: xauthed, viewed, default
-		var xauthed_services = xauth.getAvailableServices(cfg.s);
-		if(xauthed_services) {
-			xauth.checkServices(xauthed_services, function(verifiedSources) {
-				console.log(verifiedSources);
-			});
+		// Build that widget
+		function build(services) {
+			// Add CSS
+			if (!OPENLIKE.Widget._initialized) {
+				OPENLIKE.Widget._initialized = true;
+				if (cfg.css) {
+					css = document.createElement('LINK');
+					css.rel = 'stylesheet';
+					css.type = 'text/css';
+					css.href = cfg.css;
+					(document.getElementsByTagName('HEAD')[0] || document.body).appendChild(css);
+				}
+			}
+
+			// Get current script object
+			var script = document.getElementsByTagName('SCRIPT');
+			script = script[script.length - 1];
+
+			// Build Widget
+			wrapper = document.createElement('DIV');
+			wrapper.id = 'openlike-widget';
+			wrapper.className = 'openlike';
+			wrapper.setAttribute('data-vertical', cfg.vertical)
+			if (cfg.header) {
+				title = document.createElement('P');
+				title.innerHTML = OPENLIKE.util.escape(cfg.header);
+				edit = document.createElement('a');
+				edit.className = 'edit';
+				edit.appendChild(document.createTextNode('edit'));
+				wrapper.appendChild(title);
+				wrapper.appendChild(edit);
+			}
+
+			list = document.createElement('UL');
+			for (i=0, len=services.length; i<len; i++) {
+				if (source = OPENLIKE.Sources[services[i]]) {
+					source = OPENLIKE.prepSource(services[i], source);
+					li = document.createElement('LI');
+					if (source.html) {
+						a = source.html(cfg);
+					} else {
+						a = document.createElement('A');
+						a.className = source.klass;
+						a.href = '#';
+						a.innerHTML = OPENLIKE.util.escape(source.name);
+						if (source.title) a.title = source.title;
+						if (source.like) a.onclick = source.like(cfg);
+						if (source.basicLink) {
+							a.href = source.basicLink(a, cfg);
+							if (source.popup) {
+								a.onclick = function(url, target, attrs) {
+									return function() {
+										window.open(url, target, attrs);
+										return false;
+									};
+								}(a.href, source.popup.target, source.popup.attrs);
+							}
+							a.target = source.target;
+						}
+					}
+					li.appendChild(a);
+					list.appendChild(li);
+				}
+			}
+			wrapper.appendChild(list);
+
+			script.parentNode.insertBefore(wrapper, script);
+			wrapper = title = list = li = script = source = null;
 		}
 		
-
-		// Add CSS
-		if (!OPENLIKE.Widget._initialized) {
-			OPENLIKE.Widget._initialized = true;
-			if (cfg.css) {
-				css = document.createElement('LINK');
-				css.rel = 'stylesheet';
-				css.type = 'text/css';
-				css.href = cfg.css;
-				(document.getElementsByTagName('HEAD')[0] || document.body).appendChild(css);
-			}
+		// Determine, of the defaults, which to use
+		// in this order: preferred, xauthed, viewed, default
+		var preferred_services = OPENLIKE.Preferences.get(cfg.vertical);
+		var xauthed_services = xauth.getAvailableServices(cfg.s);
+		var default_services = OPENLIKE.Verticals[cfg.vertical]? OPENLIKE.Verticals[cfg.vertical]: OPENLIKE.Verticals['default'];
+		if (preferred_services.length) {
+			build(preferred_services);
 		}
-
-		// Get current script object
-		var script = document.getElementsByTagName('SCRIPT');
-		script = script[script.length - 1];
-
-		// Build Widget
-		wrapper = document.createElement('DIV');
-		wrapper.id = 'openlike-widget';
-		wrapper.className = 'openlike';
-		wrapper.setAttribute('data-vertical', cfg.vertical)
-		if (cfg.header) {
-			title = document.createElement('P');
-			title.innerHTML = OPENLIKE.util.escape(cfg.header);
-			edit = document.createElement('a');
-			edit.className = 'edit';
-			edit.appendChild(document.createTextNode('edit'));
-			wrapper.appendChild(title);
-			wrapper.appendChild(edit);
-		}
-
-		list = document.createElement('UL');
-		for (i=0, len=cfg.s.length; i<len; i++) {
-			if (source = OPENLIKE.Sources[cfg.s[i]]) {
-				source = OPENLIKE.prepSource(cfg.s[i], source);
-				li = document.createElement('LI');
-				if (source.html) {
-					a = source.html(cfg);
-				} else {
-					a = document.createElement('A');
-					a.className = source.klass;
-					a.href = '#';
-					a.innerHTML = OPENLIKE.util.escape(source.name);
-					if (source.title) a.title = source.title;
-					if (source.like) a.onclick = source.like(cfg);
-					if (source.basicLink) {
-						a.href = source.basicLink(a, cfg);
-						if (source.popup) {
-							a.onclick = function(url, target, attrs) {
-								return function() {
-									window.open(url, target, attrs);
-									return false;
-								};
-							}(a.href, source.popup.target, source.popup.attrs);
-						}
-						a.target = source.target;
-					}
+		else if (xauthed_services.length) {
+			xauth.checkServices(xauthed_services, function(verified_services) {
+				if (verified_services.length) {
+					build(verified_services);
 				}
-				li.appendChild(a);
-				list.appendChild(li);
-			}
+				else {
+					build(default_services);
+				}
+			});
 		}
-		wrapper.appendChild(list);
-
-		script.parentNode.insertBefore(wrapper, script);
-		wrapper = title = list = li = script = source = null;
+		else {
+			build(default_services);
+		}
 		
 	};
 
