@@ -32,6 +32,10 @@
 	
 #openlike-edit {
 	display: none;
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	border: 1px solid #000;
 }
 
 	#openlike-edit a {
