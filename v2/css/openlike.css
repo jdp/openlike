@@ -4,3 +4,13 @@ iframe.openlike {
 	height: 35px;
 	margin-bottom: 5px;
 }
+
+/* huff post */
+.blog_badges iframe.openlike {
+	width: 250px;
+}
+
+/* cnn */
+.cnn_strylccimg300 iframe.openlike {
+	margin-top: 8px;
+}

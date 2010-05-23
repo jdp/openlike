@@ -45,6 +45,15 @@ javascript:void(
 					el = document.getElementById('tn15adrhs');
 					el.insertBefore(iframe, el.firstChild);
 					break;
+				case 'www.huffingtonpost.com':
+					el = document.getElementsByClassName('fb_like_contain')[0];
+					el.parentNode.insertBefore(iframe, el);
+					el.parentNode.removeChild(el);
+					break;
+				case 'www.cnn.com':
+					el = document.getElementsByClassName('cnn_strylccimg300')[0];
+					el.appendChild(iframe);
+					break;
 			}
 
 		}
