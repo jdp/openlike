@@ -1,6 +1,33 @@
-#openlike-widget {
-	font-family: "Lucida Grande", Calibri, Arial, sans-serif;
+body, html {
+	margin: 0;
+	padding: 0;
 }
+
+	body {
+		padding: 5px 10px;
+		background: #fff9aa;
+	}
+
+#openlike-widget {
+	font-family: arial;
+	font-size: 13px;
+}
+
+	#openlike-widget p,
+	#openlike-widget ul {
+		float: left;
+		line-height: 25px;
+		margin: 0 5px 0 0 !important;
+	}
+		
+		#openlike-widget ul li {
+			padding: 0 !important;
+			margin: 0 !important;
+		}
+		
+			#openlike-widget ul li a.enabled {
+				margin-right: 5px !important;
+			}
 	
 	#openlike-widget a {
 		display: none;

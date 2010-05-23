@@ -35,7 +35,9 @@ if (!window.OPENLIKE) {
 }
 
 if (!OPENLIKE.Widget) {
-	OPENLIKE.Widget = function(cfg) {
+	
+	OPENLIKE.ThreadedStatementState = function(cfg) {
+		
 		// Params for cfg
 		//
 		//   header -- the header text (or none) to give the widget (default 'Like this:')
@@ -49,7 +51,6 @@ if (!OPENLIKE.Widget) {
 				title: document.title,
 				header: 'Like this:',
 				css: OPENLIKE.assetHost + '/v1/openlike.css',
-				category: '',
 				s: (function() {
 					return OPENLIKE.Verticals[cfg && cfg.vertical? cfg.vertical: 'default'];
 				})()
@@ -148,6 +149,15 @@ if (!OPENLIKE.Widget) {
 		else {
 			build(default_services);
 		}
+		
+	}
+	
+	OPENLIKE.Widget = function() {
+		
+		// Get current script object
+		var scriptParent = $('script').eq($('script').size() - 1).parent(),
+			iframe = $('<iframe src="http://localhost/openlike/index.html"></iframe>');
+		scriptParent.prepend(iframe);
 		
 	};
 
