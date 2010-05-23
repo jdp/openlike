@@ -170,14 +170,14 @@ if (!OPENLIKE.Widget) {
 	
 	OPENLIKE.Verticals = {
 		
-		news: [
+		'news': [
 			'google',
 			'digg',
 			'twitter',
 			'reddit'
 		],
 		
-		default: [
+		'default': [
 			'google',
 			'facebook',
 			'hunch',
