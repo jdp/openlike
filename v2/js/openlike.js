@@ -53,7 +53,7 @@ if (!OPENLIKE.Widget) {
 				header: 'Like this:',
 				css: OPENLIKE.assetHost + '/v1/openlike.css',
 				s: (function() {
-					return OPENLIKE.Verticals[cfg && cfg.vertical? cfg.vertical: 'default'];
+					return OPENLIKE.Verticals[getParams.vertical && getParams.vertical != ''? getParams.vertical: 'default'];
 				})()
 			},
 			i, len, wrapper, title, list, li, a, source,
@@ -169,11 +169,14 @@ if (!OPENLIKE.Widget) {
 		
 	}
 	
-	OPENLIKE.Widget = function() {
+	OPENLIKE.Widget = function(cfg) {
 		
 		// Get current script object
-		var scriptParent = $('script').eq($('script').size() - 1).parent(),
-			iframe = $('<iframe src="http://localhost/openlike/index.html"></iframe>');
+		var url = cfg.url? cfg.url: window.location.href,
+			title = cfg.title? cfg.title: document.title,
+			vertical = cfg.vertical? cfg.vertical: 'default',
+			scriptParent = $('script').eq($('script').size() - 1).parent(),
+			iframe = $('<iframe src="http://localhost/openlike/index.html?url="' + url + '&title=' + title + '&vertical=' + vertical + '></iframe>');
 		scriptParent.prepend(iframe);
 		
 	};

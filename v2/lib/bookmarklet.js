@@ -1,16 +1,6 @@
 javascript:void(
 	
-	(function(){
-		
-		function addJs(url) {
-			
-			var script = document.createElement('script');
-			script.setAttribute('type','text/javascript');
-			script.setAttribute('src', url);
-			document.body.appendChild(script);
-			return script;
-			
-		}
+	(function() {
 		
 		function addCss(url) {
 			
