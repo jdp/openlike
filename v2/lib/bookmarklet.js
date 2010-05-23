@@ -2,6 +2,8 @@ javascript:void(
 	
 	(function() {
 		
+		var assetHost = 'http://localhost/~justin/openlike/';
+		
 		function addCss(url) {
 			
 			var script = document.createElement('link');
@@ -23,11 +25,40 @@ javascript:void(
 		}
 		
 		function addWidget() {
+			
+			var og = {};
+			var meta_tags = document.getElementsByTagName('META');
+			for (i = 0; i < meta_tags.length; i++) {
+				var property = meta_tags[i].getAttribute('property');
+				if (property && property.match(/^og:/)) {
+					og[property] = meta_tags[i].getAttribute('content');
+				}
+			}
+			
+			var vertical = (function() {
+				if (og['og:type']) {
+					return og['og:type'];
+				}
+				else {
+					switch (document.location.host) {
+						/*
+						case 'www.imdb.com':
+							return 'movie';
+						*/
+						case 'www.huffingtonpost.com':
+						case 'www.cnn.com':
+							return 'news';
+						default:
+							return 'default';
+					}
+				}
+			})();
+			
 
-			var iframe = createIframe('http://localhost/openlike/index.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(document.title)),
+			var iframe = createIframe(assetHost+'index.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(document.title) + '&vertical=' + encodeURIComponent(vertical)),
 				el;
 		
-			addCss('http://localhost/openlike/v2/css/openlike.css');
+			addCss(assetHost+'v2/css/openlike.css');
 		
 			switch(document.location.host) {
 				case 'www.imdb.com':
