@@ -2,7 +2,7 @@ javascript:void(
 	
 	(function() {
 		
-		var assetHost = 'http://localhost/~justin/openlike/';
+		var assetHost = 'http://justinpoliey.com/openlike/';
 		
 		function addCss(url) {
 			
@@ -35,6 +35,15 @@ javascript:void(
 				}
 			}
 			
+			var title = (function() {
+				if (og['og:title']) {
+					return og['og:title'];
+				}
+				else {
+					return document.title;
+				}
+			})();
+			
 			var vertical = (function() {
 				if (og['og:type']) {
 					return og['og:type'];
@@ -55,7 +64,7 @@ javascript:void(
 			})();
 			
 
-			var iframe = createIframe(assetHost+'index.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(document.title) + '&vertical=' + encodeURIComponent(vertical)),
+			var iframe = createIframe(assetHost+'index.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(title) + '&vertical=' + encodeURIComponent(vertical)),
 				el;
 		
 			addCss(assetHost+'v2/css/openlike.css');

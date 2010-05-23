@@ -172,11 +172,39 @@ if (!OPENLIKE.Widget) {
 	OPENLIKE.Widget = function(cfg) {
 		
 		// Get current script object
-		var url = cfg && cfg.url? cfg.url: window.location.href,
-			title = cfg && cfg.title? cfg.title: document.title,
-			vertical = cfg && cfg.vertical? cfg.vertical: 'default',
-			scriptParent = $('script').eq($('script').size() - 1).parent(),
-			iframe = $('<iframe src="http://localhost/openlike/index.html?url="' + url + '&title=' + title + '&vertical=' + vertical + '></iframe>');
+		var url = cfg && cfg.url? cfg.url: window.location.href;
+		var og = {};
+		var meta_tags = document.getElementsByTagName('META');
+		for (i = 0; i < meta_tags.length; i++) {
+			var property = meta_tags[i].getAttribute('property');
+			if (property && property.match(/^og:/)) {
+				og[property] = meta_tags[i].getAttribute('content');
+			}
+		}
+		var vertical = (function() {		
+			if (cfg && cfg.vertical) {
+				return cfg.vertical;
+			}
+			else if (og['og:type']) {
+				return og['og:type'];
+			} else {
+				return 'default';
+			}
+		})();
+		var title = (function() {
+			if (cfg && cfg.title) {
+				return cfg.title;
+			}
+			else if (og['og:title']) {
+				return og['og:title'];
+			}
+			else {
+				return document.title;
+			}
+		})();
+		scriptParent = $('script').eq($('script').size() - 1).parent();
+		var iframe = $('<iframe src="http://justinpoliey.com/openlike/index.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title) + '&vertical=' + encodeURIComponent(vertical) + '></iframe>');
+	//	console.log(url, title, vertical);
 		scriptParent.prepend(iframe);
 		
 	};
