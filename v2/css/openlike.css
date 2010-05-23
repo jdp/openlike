@@ -5,12 +5,23 @@ iframe.openlike {
 	margin-bottom: 5px;
 }
 
-/* huff post */
-.blog_badges iframe.openlike {
-	width: 250px;
+/* digg */
+.news-details iframe.openlike {
+	width: 300px;
+	float: left;
 }
 
-/* cnn */
-.cnn_strylccimg300 iframe.openlike {
-	margin-top: 8px;
+.news-details .tool {
+	padding-top: 9px;
+}
+
+/* techcrunch */
+.post_subheader.snap_nopreview {
+	height: 30px;
+}
+
+/* rt */
+.share_social_media iframe.openlike {
+	position: relative;
+	top: -9px;
 }

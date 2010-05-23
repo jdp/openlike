@@ -2,7 +2,7 @@ javascript:void(
 	
 	(function() {
 		
-		var assetHost = 'http://localhost/~justin/openlike/';
+		var assetHost = 'http://localhost/openlike/';
 		
 		function addCss(url) {
 			
@@ -41,12 +41,8 @@ javascript:void(
 				}
 				else {
 					switch (document.location.host) {
-						/*
-						case 'www.imdb.com':
-							return 'movie';
-						*/
-						case 'www.huffingtonpost.com':
-						case 'www.cnn.com':
+						case 'techcrunch.com':
+						case 'digg.com':
 							return 'news';
 						default:
 							return 'default';
@@ -61,17 +57,24 @@ javascript:void(
 			addCss(assetHost+'v2/css/openlike.css');
 		
 			switch(document.location.host) {
+				case 'digg.com':
+					el = document.getElementsByClassName('inline-share-actions')[0];
+					el.parentNode.insertBefore(iframe, el);
+					el.parentNode.removeChild(el);
+					break;
+				case 'techcrunch.com':
+					el = document.getElementsByClassName('excerpt_subheader_right')[0];
+					el.innerHTML = '';
+					el.appendChild(iframe);
+					break;
 				case 'www.imdb.com':
 					el = document.getElementById('tn15adrhs');
 					el.insertBefore(iframe, el.firstChild);
 					break;
-				case 'www.huffingtonpost.com':
-					el = document.getElementsByClassName('fb_like_contain')[0];
-					el.parentNode.insertBefore(iframe, el);
-					el.parentNode.removeChild(el);
-					break;
-				case 'www.cnn.com':
-					el = document.getElementsByClassName('cnn_strylccimg300')[0];
+				case 'www.rottentomatoes.com':
+					el = document.getElementsByClassName('share_social_media')[0];
+					el = el.getElementsByClassName('fr')[0];
+					el.innerHTML = '';
 					el.appendChild(iframe);
 					break;
 			}

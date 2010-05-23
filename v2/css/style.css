@@ -37,6 +37,20 @@ body, html {
 			#openlike-widget ul li a {
 				opacity: .2;
 				display: none;
+				-moz-border-radius: 3px;
+				-webkit-border-radius: 3px;
+			}
+			
+			#openlike-widget ul li a.openlike-blockbuster {
+				background-image: url(http://imgur.com/AfSx1.png);
+			}
+			
+			#openlike-widget ul li a.openlike-netflix {
+				background-image: url(http://imgur.com/qBjfx.png);
+			}
+			
+			#openlike-widget ul li a.openlike-yahoo {
+				background-image: url(http://imgur.com/tqvui.png);
 			}
 		
 			#openlike-widget ul li a.enabled {

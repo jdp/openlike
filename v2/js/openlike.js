@@ -171,12 +171,12 @@ if (!OPENLIKE.Widget) {
 	
 	OPENLIKE.Widget = function(cfg) {
 		
-		// Get current script object
-		var url = cfg && cfg.url? cfg.url: window.location.href,
-			title = cfg && cfg.title? cfg.title: document.title,
-			vertical = cfg && cfg.vertical? cfg.vertical: 'default',
-			scriptParent = $('script').eq($('script').size() - 1).parent(),
-			iframe = $('<iframe src="http://localhost/openlike/index.html?url="' + url + '&title=' + title + '&vertical=' + vertical + '></iframe>');
+		cfg = cfg? cfg: {};
+		cfg.url = cfg && cfg.url? cfg.url: window.location.href;
+		cfg.title = cfg && cfg.title? cfg.title: document.title;
+		cfg.vertical = cfg && cfg.vertical? cfg.vertical: 'default';
+		var scriptParent = $('script').eq($('script').size() - 1).parent(),
+			iframe = $('<iframe src="http://localhost/openlike/index.html?url="' + cfg.url + '&title=' + cfg.title + '&vertical=' + cfg.vertical + '></iframe>');
 		scriptParent.prepend(iframe);
 		
 	};
@@ -200,7 +200,7 @@ if (!OPENLIKE.Widget) {
 			'facebook',
 			'twitter',
 			'google',
-			//'yahoo',
+			'yahoo',
 			'reddit'
 		],
 		
@@ -208,7 +208,7 @@ if (!OPENLIKE.Widget) {
 			'facebook',
 			'twitter',
 			'blockbuster',
-			//'netflix',
+			'netflix',
 			//'getglue',
 			'hunch'
 		],
@@ -275,10 +275,12 @@ if (!OPENLIKE.Widget) {
 					category = cfg.type ? '&category=' + encodeURIComponent(cfg.type) : '';
 				return 'http://hunch.com/openlike/?url=' + url + '&title=' + title + category;
 			},
+			/*
 			popup: {
 				target: '_blank',
 				attrs: 'width=610,height=600'
 			},
+			*/
 			title: 'Add this to your Hunch taste profile'
 		},
 		reddit: {
@@ -298,6 +300,14 @@ if (!OPENLIKE.Widget) {
 			},
 			title: 'Like this on StumbleUpon'
 		},
+		yahoo: {
+			url: 'http://search.yahoo.com/',
+			basicLink: function(a, cfg) {
+				var title = encodeURIComponent(cfg.title);
+				return 'http://search.yahoo.com/search?p=' + title + '&fr=orion&ygmasrchbtn=Web+Search';
+			},
+			title: 'Search this on Yahoo Buzz!'
+		},
 		blockbuster: {
 			url: 'http://www.blockbuster.com/',
 			basicLink: function(a, cfg) {
@@ -305,6 +315,14 @@ if (!OPENLIKE.Widget) {
 				return 'http://www.blockbuster.com/search/product/products?keyword=' + title;
 			},
 			title: 'Search this on Blockbuster'
+		},
+		netflix: {
+			url: 'http://www.netflix.com/',
+			basicLink: function(a, cfg) {
+				var title = encodeURIComponent(cfg.title);
+				return 'http://www.netflix.com/WiSearch?oq=&v1=' + title + '&search_submit=';
+			},
+			title: 'Search this on Netflix'
 		},
 		twitter: {
 			url: 'http://twitter.com',
