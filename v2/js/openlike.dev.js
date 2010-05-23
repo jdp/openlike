@@ -47,7 +47,7 @@ if (!OPENLIKE.Widget) {
 		var defaults = {
 				url: window.location.href,
 				title: document.title,
-				header: 'Like this',
+				header: 'Like this:',
 				css: OPENLIKE.assetHost + '/v1/openlike.css',
 				category: '',
 				s: (function() {

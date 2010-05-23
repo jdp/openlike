@@ -17,7 +17,7 @@ OPENLIKE.Ui = new function() {
 				enabled = btn.hasClass('enabled');
 			// save the preference for this particular service in this vertical
 			try { 
-				OPENLIKE.Preferences[enabled? 'hide': 'show'](vertical, btn.text().toLowerCase());
+				OPENLIKE.Preferences[enabled? 'show': 'hide'](vertical, btn.text().toLowerCase());
 			} catch(e) { alert(e); }
 		});
 		
@@ -42,7 +42,7 @@ $(function() {
 				serviceNodes = $('li', widget).clone();
 			// if panel doesnt exist yet we need to build it
 			if(!editPanel.size()) {
-				editPanel = $('<div id="openlike-edit"><span>Edit Openlike</span><ul id="openlike-edit-contents"></ul></div>');
+				editPanel = $('<div id="openlike-edit" class="openlike"><span>Edit Openlike</span><ul id="openlike-edit-contents"></ul></div>');
 				$('body').append(editPanel);
 			}
 			// take the buttons from widget and put them in the panel
