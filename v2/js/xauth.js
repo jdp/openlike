@@ -14,21 +14,28 @@ var xauth = new function() {
 		});
 	}
 	
+	/*
+	 * Takes an array of service names and authenticates them against XAuth.
+	 * Also takes a callback for when authentication is complete, which as
+	 * an argument takes an array of service names that were successfully authenticated.
+	 * @param Array<String> List of service names to authenticate
+	 * @param Function Callback to call when authentication is complete
+	 */
 	this.checkServices = function(sources, callback) {
 		
 		XAuth.retrieve({
-		  retrieve: $.map(sources, function(e, i) {
-						return e.xauth;
-					}),
-		  callback: parseServicesWithTokens
+			retrieve: $.map(sources, function(e, i) {
+				return OPENLIKE.Sources[e].xauth;
+			}),
+			callback: parseServicesWithTokens
 		});
 
 		function parseServicesWithTokens(data) {
-			var tokens = data.tokens;
-			 	verifiedSources = $.map(sources, function(e, i) {
-					if(tokens[e.xauth].token)
-						return e;
-				});
+			var verifiedSources = $.map(sources, function(e, i) {
+				if(data.tokens[OPENLIKE.Sources[e].xauth]) {
+					return e;
+				}
+			});
 			callback.call(null, verifiedSources);
 		}
 		
