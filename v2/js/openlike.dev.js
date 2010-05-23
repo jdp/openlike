@@ -84,11 +84,7 @@ if (!OPENLIKE.Widget) {
 			if (cfg.header) {
 				title = document.createElement('P');
 				title.innerHTML = OPENLIKE.util.escape(cfg.header);
-				edit = document.createElement('a');
-				edit.className = 'edit';
-				edit.appendChild(document.createTextNode('edit'));
 				wrapper.appendChild(title);
-				wrapper.appendChild(edit);
 			}
 
 			list = document.createElement('UL');
