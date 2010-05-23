@@ -7,6 +7,15 @@ body, html {
 		padding: 5px 10px;
 		background: #fff9aa;
 	}
+	
+#openlike-edit-btn {
+	float: right;
+	font-size: 11px;
+	color: #0044cc;
+	line-height: 25px;
+	cursor: pointer;
+	font-weight: normal;
+}
 
 #openlike-widget {
 	font-family: arial;

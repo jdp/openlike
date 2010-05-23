@@ -2,7 +2,8 @@ OPENLIKE.Ui = new function() {
 	
 	this.s = {
 		widget: '#openlike-widget',
-		editBtns: '#openlike-widget.edit a'
+		editBtns: '#openlike-widget.edit a',
+		editModeBtn: '#openlike-edit-btn'
 	}
 
 	this.updateServicePreferences = function() {
@@ -22,10 +23,12 @@ OPENLIKE.Ui = new function() {
 $(function() {
 	
 	// widget body
-	$(OPENLIKE.Ui.s.widget)
+	$(OPENLIKE.Ui.s.editModeBtn)
 		// show edit button
-		.live('dblclick', function() {
-			$(this).toggleClass('edit');
+		.live('click', function() {
+			var btn = $(this);
+			$(OPENLIKE.Ui.s.widget).toggleClass('edit');
+			btn.text(btn.text() == 'edit'? 'save': 'edit');
 		});
 		
 	// widget body

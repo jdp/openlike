@@ -137,6 +137,11 @@ if (!OPENLIKE.Widget) {
 				}
 			}
 			wrapper.appendChild(list);
+		
+			var editBtn = document.createElement('a');
+			editBtn.id = 'openlike-edit-btn';
+			editBtn.appendChild(document.createTextNode('edit'));
+			wrapper.appendChild(editBtn);
 
 			script.parentNode.insertBefore(wrapper, script);
 			wrapper = title = list = li = script = source = null;
