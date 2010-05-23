@@ -46,9 +46,10 @@ if (!OPENLIKE.Widget) {
 		//   url -- string -- the url of the object to like (default window.location.href)
 		//   title -- string -- the title of the object to like (default document.title)
 		//   type -- string -- the type of the object to like, e.g. product, activity, sport, bar, company (optional)
-		var defaults = {
-				url: window.location.href,
-				title: document.title,
+		var getParams = getGetParams(),
+		 	defaults = {
+				url: getParams.url,
+				title: getParams.title,
 				header: 'Like this:',
 				css: OPENLIKE.assetHost + '/v1/openlike.css',
 				s: (function() {
@@ -58,6 +59,19 @@ if (!OPENLIKE.Widget) {
 			i, len, wrapper, title, list, li, a, source,
 			css;
 		cfg = OPENLIKE.util.update(defaults, cfg);
+		
+		console.log(getParams);
+		
+		// create an object from GET params
+		function getGetParams() {
+		    var vars = [], hash;
+		    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		    for(var i = 0; i < hashes.length; i++) {
+		        hash = hashes[i].split('=');
+		        vars[hash[0]] = decodeURIComponent(hash[1]);
+		    }
+		    return vars;
+		}
 		
 		// Build that widget
 		function build(enabled_services) {

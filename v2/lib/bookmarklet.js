@@ -34,7 +34,7 @@ javascript:void(
 		
 		function addWidget() {
 
-			var iframe = createIframe('http://localhost/openlike/index.html'),
+			var iframe = createIframe('http://localhost/openlike/index.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(document.title)),
 				el;
 		
 			addJs('http://localhost/openlike/v2/js/openlike.dev.js');
