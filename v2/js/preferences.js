@@ -12,7 +12,6 @@ OPENLIKE.Preferences = new function() {
 	 */
 	this.get = function(vertical) {
 		var storage = OPENLIKE.Preferences.getStorage();
-		console.log('get', vertical, 'storage', storage);
 		return storage[vertical]? storage[vertical]: [];
 	};
 	
@@ -24,7 +23,6 @@ OPENLIKE.Preferences = new function() {
 	 */
 	this.put = function(vertical, services) {
 		var storage = OPENLIKE.Preferences.getStorage();
-		console.log('put', services, 'in', vertical, 'storage', storage);
 		storage[vertical] = services;
 		localStorage.openlike = JSON.stringify(storage);
 		return true;
