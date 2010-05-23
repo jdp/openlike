@@ -1,16 +1,6 @@
 javascript:void(
 	
-	(function(){
-		
-		function addJs(url) {
-			
-			var script = document.createElement('script');
-			script.setAttribute('type','text/javascript');
-			script.setAttribute('src', url);
-			document.body.appendChild(script);
-			return script;
-			
-		}
+	(function() {
 		
 		function addCss(url) {
 			
@@ -37,7 +27,6 @@ javascript:void(
 			var iframe = createIframe('http://localhost/openlike/index.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(document.title)),
 				el;
 		
-			addJs('http://localhost/openlike/v2/js/openlike.dev.js');
 			addCss('http://localhost/openlike/v2/css/openlike.css');
 		
 			switch(document.location.host) {
