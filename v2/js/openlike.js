@@ -60,8 +60,6 @@ if (!OPENLIKE.Widget) {
 			css;
 		cfg = OPENLIKE.util.update(defaults, cfg);
 		
-		console.log(getParams);
-		
 		// create an object from GET params
 		function getGetParams() {
 		    var vars = [], hash;
