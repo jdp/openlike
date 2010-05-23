@@ -59,7 +59,7 @@ if (!OPENLIKE.Widget) {
 		cfg = OPENLIKE.util.update(defaults, cfg);
 		
 		// Build that widget
-		function build(services) {
+		function build(enabled_services) {
 			// Add CSS
 			if (!OPENLIKE.Widget._initialized) {
 				OPENLIKE.Widget._initialized = true;
@@ -92,15 +92,18 @@ if (!OPENLIKE.Widget) {
 			}
 
 			list = document.createElement('UL');
-			for (i=0, len=services.length; i<len; i++) {
-				if (source = OPENLIKE.Sources[services[i]]) {
-					source = OPENLIKE.prepSource(services[i], source);
+			for (i=0, len=cfg.s.length; i<len; i++) {
+				if (source = OPENLIKE.Sources[cfg.s[i]]) {
+					source = OPENLIKE.prepSource(cfg.s[i], source);
 					li = document.createElement('LI');
 					if (source.html) {
 						a = source.html(cfg);
 					} else {
 						a = document.createElement('A');
 						a.className = source.klass;
+						if (enabled_services.indexOf(source.name) > -1) {
+							$(a).addClass('enabled');
+						}
 						a.href = '#';
 						a.innerHTML = OPENLIKE.util.escape(source.name);
 						if (source.title) a.title = source.title;
