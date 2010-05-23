@@ -25,30 +25,18 @@ body, html {
 			margin: 0 !important;
 		}
 		
+			#openlike-widget ul li a {
+				opacity: .2;
+				display: none;
+			}
+		
 			#openlike-widget ul li a.enabled {
+				opacity: 1;
+				margin-right: 5px !important;
+				display: block;
+			}
+			
+			#openlike-widget.edit ul li a {
+				display: block;
 				margin-right: 5px !important;
 			}
-	
-	#openlike-widget a {
-		display: none;
-	}
-	
-		#openlike-widget a.enabled {
-			display: block;
-		}
-	
-#openlike-edit {
-	display: none;
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-	border: 1px solid #000;
-}
-
-	#openlike-edit a {
-		opacity: .2;
-	}	
-	
-		#openlike-edit a.enabled {
-			opacity: 1;
-		}
