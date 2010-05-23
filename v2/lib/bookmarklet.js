@@ -2,6 +2,8 @@ javascript:void(
 	
 	(function() {
 		
+		var assetHost = 'http://localhost/~justin/openlike/';
+		
 		function addCss(url) {
 			
 			var script = document.createElement('link');
@@ -39,8 +41,10 @@ javascript:void(
 				}
 				else {
 					switch (document.location.host) {
+						/*
 						case 'www.imdb.com':
 							return 'movie';
+						*/
 						case 'www.huffingtonpost.com':
 						case 'www.cnn.com':
 							return 'news';
@@ -51,10 +55,10 @@ javascript:void(
 			})();
 			
 
-			var iframe = createIframe('http://localhost/openlike/index.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(document.title) + '&vertical=' + encodeURIComponent(vertical)),
+			var iframe = createIframe(assetHost+'index.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(document.title) + '&vertical=' + encodeURIComponent(vertical)),
 				el;
 		
-			addCss('http://localhost/openlike/v2/css/openlike.css');
+			addCss(assetHost+'v2/css/openlike.css');
 		
 			switch(document.location.host) {
 				case 'www.imdb.com':
