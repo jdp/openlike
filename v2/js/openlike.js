@@ -29,6 +29,15 @@ if (!window.OPENLIKE) {
 			},
 			notundef: function(a, b) {
 				return typeof(a) == 'undefined' ? b : a;
+			},
+			toggleClass: function(el, klass) {
+				var regexpr = new RegExp('\\b'+klass+'\\b');
+				if (el.className.match(regexpr)) {
+					el.className = el.className.replace(regexpr, '');
+				}
+				else {
+					el.className += ' '+klass;
+				}
 			}
 		}
 	};
@@ -107,28 +116,44 @@ if (!OPENLIKE.Widget) {
 					li = document.createElement('LI');
 					if (source.html) {
 						a = source.html(cfg);
-					} else {
+					}
+					else {
 						a = document.createElement('A');
 						a.className = source.klass;
 						if (enabled_services.indexOf(source.name) > -1) {
-							$(a).addClass('enabled');
+							a.className += ' enabled';
 						}
 						a.href = '#';
 						a.innerHTML = OPENLIKE.util.escape(source.name);
-						if (source.title) a.title = source.title;
-						if (source.like) a.onclick = source.like(cfg);
+						if (source.title) {
+							a.title = source.title;
+						}
 						if (source.basicLink) {
 							a.href = source.basicLink(a, cfg);
-							if (source.popup) {
-								a.onclick = function(url, target, attrs) {
-									return function() {
-										window.open(url, target, attrs);
-										return false;
-									};
-								}(a.href, source.popup.target, source.popup.attrs);
-							}
 							a.target = source.target;
 						}
+						a.onclick = (function(src) {
+							return function(e) {
+								var widget = document.getElementById('openlike-widget');
+								// If in edit mode, button clicks enable/disable sources
+								if (widget.className.match(/\bedit\b/)) {
+									OPENLIKE.util.toggleClass(this, 'enabled');
+									e.preventDefault();
+									return false;
+								}
+								// Some services share through popup, accommodate them
+								if (src.popup) {
+									window.open(this.href, src.popup.target, src.popup.attrs);
+									e.preventDefault();
+									return false;
+								}
+								if (src.like) {
+									// yet to be seen, use for glue addon?
+									//src.like(cfg);
+								}
+								return false;
+							};
+						})(source);
 					}
 					li.appendChild(a);
 					list.appendChild(li);
@@ -138,6 +163,9 @@ if (!OPENLIKE.Widget) {
 		
 			var editBtn = document.createElement('a');
 			editBtn.id = 'openlike-edit-btn';
+			editBtn.onclick = function() {
+				OPENLIKE.Ui.toggleEditMode();
+			}
 			editBtn.appendChild(document.createTextNode('edit'));
 			wrapper.appendChild(editBtn);
 
@@ -174,6 +202,8 @@ if (!OPENLIKE.Widget) {
 		// Get current script object
 		var cfg = cfg? cfg: {};
 		cfg.url = cfg.url? cfg.url: window.location.href;
+		
+		// Grab Open Graph metadata if possible
 		var og = {};
 		var meta_tags = document.getElementsByTagName('META');
 		for (i = 0; i < meta_tags.length; i++) {
@@ -182,6 +212,8 @@ if (!OPENLIKE.Widget) {
 				og[property] = meta_tags[i].getAttribute('content');
 			}
 		}
+		
+		// Determine vertical, priorities: config, open graph, 'default'
 		cfg.vertical = (function() {		
 			if (cfg.vertical) {
 				return cfg.vertical;
@@ -192,6 +224,8 @@ if (!OPENLIKE.Widget) {
 				return 'default';
 			}
 		})();
+		
+		// Determine title, priorities: config, open graph, document.title
 		cfg.title = (function() {
 			if (cfg.title) {
 				return cfg.title;
@@ -203,10 +237,16 @@ if (!OPENLIKE.Widget) {
 				return document.title;
 			}
 		})();
-		scriptParent = $('script').eq($('script').size() - 1).parent();
-		var iframe = $('<iframe src="http://justinpoliey.com/openlike/index.html?url=' + encodeURIComponent(cfg.url) + '&title=' + encodeURIComponent(cfg.title) + '&vertical=' + encodeURIComponent(cfg.vertical) + '></iframe>');
 		
-		scriptParent.prepend(iframe);
+		console.info('title', cfg.title);
+
+		var script = document.getElementsByTagName('SCRIPT');
+		script = script[script.length - 1];
+		iframe = document.createElement('IFRAME');
+		iframe.src = ('http://localhost/~justin/openlike/index.html?url=' + encodeURIComponent(cfg.url) + '&title=' + encodeURIComponent(cfg.title) + '&vertical=' + encodeURIComponent(cfg.vertical)); 
+		var widget = document.getElementById('openlike-widget');
+		console.log(script.parentNode);
+		script.parentNode.insertBefore(iframe, wrapper);
 		
 	};
 

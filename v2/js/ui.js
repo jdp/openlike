@@ -1,43 +1,32 @@
 OPENLIKE.Ui = new function() {
 	
-	this.s = {
-		widget: '#openlike-widget',
-		editBtns: '#openlike-widget.edit a',
-		editModeBtn: '#openlike-edit-btn'
+	this.toggleEditMode = function() {
+		var widget = document.getElementById('openlike-widget');
+		var button = document.getElementById('openlike-edit-btn');
+		OPENLIKE.util.toggleClass(widget, 'edit');
+		button.innerHTML = button.innerHTML == 'edit'? 'save': 'edit';
+		OPENLIKE.Ui.updateServicePreferences();
 	}
 
+	/*
+	 * Saves the user's preferences based on the states of the widget buttons.
+	 */
 	this.updateServicePreferences = function() {
+		var widget = document.getElementById('openlike-widget');
+		var edit_buttons = [];
+		var vertical = widget.getAttribute('data-vertical');
 		
-		var vertical = $(OPENLIKE.Ui.s.widget).attr('data-vertical');
-				
-		$(OPENLIKE.Ui.s.editBtns).each(function() {
-			var btn = $(this),
-				enabled = btn.hasClass('enabled');
-		 	OPENLIKE.Preferences[enabled? 'show': 'hide'](vertical, btn.text().toLowerCase());
-		});
+		for (var i = 0; i < widget.childNodes[1].childNodes.length; i++) {
+			edit_buttons.push(widget.childNodes[1].childNodes[i].childNodes[0]);
+		}
+		
+		for (i = 0; i < edit_buttons.length; i++) {
+			var button = edit_buttons[i];
+			var enabled = button.className.match(/\benabled\b/) != null;
+			OPENLIKE.Preferences[enabled? 'show': 'hide'](vertical, button.innerHTML.toLowerCase());
+		}
 		
 	}
 	
 };
 
-$(function() {
-	
-	// widget body
-	$(OPENLIKE.Ui.s.editModeBtn)
-		// show edit button
-		.live('click', function() {
-			var btn = $(this);
-			$(OPENLIKE.Ui.s.widget).toggleClass('edit');
-			btn.text(btn.text() == 'edit'? 'save': 'edit');
-		});
-		
-	// widget body
-	$(OPENLIKE.Ui.s.editBtns)
-		// show edit button
-		.live('click', function(e) {
-			$(this).toggleClass('enabled');
-			OPENLIKE.Ui.updateServicePreferences();
-			e.preventDefault();
-		});
-	
-});

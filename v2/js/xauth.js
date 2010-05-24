@@ -7,7 +7,7 @@ var xauth = new function() {
 	 * @return Array<String> The names of the services that can be authenticated through XAuth
 	 */
 	this.getAvailableServices = function(services) {
-		return $.map(services, function(e, i) {
+		return services.map(function(e, i) {
 			if(OPENLIKE.Sources[e].xauth) {
 				return e;
 			}
@@ -23,15 +23,16 @@ var xauth = new function() {
 	 */
 	this.checkServices = function(sources, callback) {
 		
+		
 		XAuth.retrieve({
-			retrieve: $.map(sources, function(e, i) {
+			retrieve: sources.map(function(e, i) {
 				return OPENLIKE.Sources[e].xauth;
 			}),
 			callback: parseServicesWithTokens
 		});
 
 		function parseServicesWithTokens(data) {
-			var verifiedSources = $.map(sources, function(e, i) {
+			var verifiedSources = sources.map(function(e, i) {
 				if(data.tokens[OPENLIKE.Sources[e].xauth]) {
 					return e;
 				}
