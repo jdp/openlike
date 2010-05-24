@@ -28,10 +28,9 @@ request.addListener('response', function(response) {
 
 request.write(querystring.stringify({
 	'js_code': js_code,
-	'compilation_level': 'ADVANCED_OPTIMIZATIONS',
+	'compilation_level': 'SIMPLE_OPTIMIZATIONS',
 	'output_format': 'text',
 	'output_info': 'compiled_code'
 }));
 
 request.end();
-
