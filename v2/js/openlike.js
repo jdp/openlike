@@ -1,5 +1,8 @@
 // TODO - add full support for the "open graph" meta elements
 // TODO - add more specifics to each service, such as buzz "imageurl"
+
+console.info('locaton', window.location.href);
+
 if (!window.OPENLIKE) {
 	window.OPENLIKE = {
 		assetHost: 'http://openlike.org',
@@ -8,7 +11,9 @@ if (!window.OPENLIKE) {
 				var obj = arguments[0], i = 1, len=arguments.length, attr;
 				for (; i<len; i++) {
 					for (attr in arguments[i]) {
-						obj[attr] = arguments[i][attr];
+						if (arguments[i].hasOwnProperty(attr)) {
+							obj[attr] = arguments[i][attr];
+						}
 					}
 				}
 				return obj;
@@ -56,21 +61,23 @@ if (!OPENLIKE.Widget) {
 		//   title -- string -- the title of the object to like (default document.title)
 		//   type -- string -- the type of the object to like, e.g. product, activity, sport, bar, company (optional)
 		var getParams = getGetParams(),
+			vertical = (getParams.vertical && (getParams.vertical != ''))? getParams.vertical: 'default',
 		 	defaults = {
-				url: getParams.url,
-				title: getParams.title,
-				vertical: getParams.vertical? getParams.vertical: 'default',
-				header: 'Like this:',
-				css: OPENLIKE.assetHost + '/v1/openlike.css',
-				s: (function() {
-					return OPENLIKE.Verticals[getParams.vertical && getParams.vertical != ''? getParams.vertical: 'default'];
+				url:      getParams.url,
+				title:    getParams.title,
+				'vertical': vertical,
+				header:   'Like this:',
+				css:      OPENLIKE.assetHost + '/v1/openlike.css',
+				s:       (function() {
+				         	return OPENLIKE.Verticals[vertical];
 				})()
 			},
-			i, len, wrapper, title, list, li, a, source,
-			css;
+			i, len, wrapper, title, list, li, a, source, css;
+
+		// Merge config with defaults, overwriting defaults
 		cfg = OPENLIKE.util.update(defaults, cfg);
 		
-		// create an object from GET params
+		// Returns an object representation of the GET parameters
 		function getGetParams() {
 		    var vars = {}, hash;
 		    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -81,8 +88,14 @@ if (!OPENLIKE.Widget) {
 		    return vars;
 		}
 
-		// Build that widget
+		/*
+		 * Callback to build the widget.
+		 * Called after vertical has been identified and appropriate sources selected.
+		 * @param Array<String> enabled_services Services that are enabled and available in the widget
+		 */
 		function build(enabled_services) {
+			
+			console.log('config', cfg);
 			
 			// Add CSS
 			if (cfg.css) {
@@ -93,11 +106,11 @@ if (!OPENLIKE.Widget) {
 				(document.getElementsByTagName('HEAD')[0] || document.body).appendChild(css);
 			}
 
-			// Get current script object
+			// Get current script object, so that the script can intelligently insert itself
 			var script = document.getElementsByTagName('SCRIPT');
 			script = script[script.length - 1];
 
-			// Build Widget
+			// Build the widget container
 			wrapper = document.createElement('DIV');
 			wrapper.id = 'openlike-widget';
 			wrapper.className = 'openlike';
@@ -108,8 +121,10 @@ if (!OPENLIKE.Widget) {
 				wrapper.appendChild(title);
 			}
 
+			// Build the list of services for the widget
+			// All services are present in the list, but some are invisible if not enabled
 			list = document.createElement('UL');
-			for (i=0, len=cfg.s.length; i<len; i++) {
+			for (i = 0, len = cfg.s.length; i < len; i++) {
 				if (source = OPENLIKE.Sources[cfg.s[i]]) {
 					source = OPENLIKE.prepSource(cfg.s[i], source);
 					li = document.createElement('LI');
@@ -181,7 +196,6 @@ if (!OPENLIKE.Widget) {
 			build(preferred_services);
 		}
 		else if (xauthed_services.length) {
-			console.log('checking xauth');
 			xauth.checkServices(xauthed_services, function(verified_services) {
 				if (verified_services.length) {
 					build(verified_services);
