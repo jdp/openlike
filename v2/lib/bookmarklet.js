@@ -2,7 +2,7 @@ javascript:void(
 	
 	(function() {
 		
-		var assetHost = 'http://localhost/openlike/';
+		var assetHost = 'http://localhost/~justin/openlike/';
 		
 		function addCss(url) {
 			
@@ -60,7 +60,7 @@ javascript:void(
 			})();
 			
 
-			var iframe = createIframe(assetHost+'index.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(title) + '&vertical=' + encodeURIComponent(vertical)),
+			var iframe = createIframe(assetHost+'widget.html?url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(title) + '&vertical=' + encodeURIComponent(vertical)),
 				el;
 		
 			addCss(assetHost+'v2/css/openlike.css');
