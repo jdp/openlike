@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="Content-Language" content="en-us" />
+		<title xmlns="">Openlike v2 Test</title>
+		<link rel="stylesheet" type="text/css" media="screen,projection" href="style.css" />
+		<script type="text/javascript" src="http://xauth.org/xauth.js"></script>
+		<script type="text/javascript" src="v2/js/widget.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="column first last span-20">
+				<h1>OpenLike Test Suite</h1>
+			</div>
+			<div class="column first span-9 append-1">
+				<div class="test">
+					<h3>A Generic Page</h3>
+					<script type="text/javascript">OPENLIKE.Widget();</script>
+					<p>Some words that mock an article.</p>
+				</div>
+			</div>
+			<div class="column first span-9 append-1">
+				<div class="test">
+					<h3>A News Article</h3>
+					<script type="text/javascript">OPENLIKE.Widget({'vertical':'news'});</script>
+					<p>Some words that mock an article.</p>
+				</div>
+				<div class="test">
+					<h3>A Cool Movie</h3>
+					<script type="text/javascript">OPENLIKE.Widget({'vertical':'movie'});</script>
+					<p>Some words about the movie.</p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
