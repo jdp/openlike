@@ -16,6 +16,8 @@ OPENLIKE.Ui = new function() {
 		var edit_buttons = [];
 		var vertical = widget.getAttribute('data-vertical');
 		
+		console.log('saving prefs for vertical', vertical);
+		
 		for (var i = 0; i < widget.childNodes[1].childNodes.length; i++) {
 			edit_buttons.push(widget.childNodes[1].childNodes[i].childNodes[0]);
 		}

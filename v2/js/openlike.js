@@ -59,6 +59,7 @@ if (!OPENLIKE.Widget) {
 		 	defaults = {
 				url: getParams.url,
 				title: getParams.title,
+				vertical: getParams.vertical? getParams.vertical: 'default',
 				header: 'Like this:',
 				css: OPENLIKE.assetHost + '/v1/openlike.css',
 				s: (function() {
@@ -71,7 +72,7 @@ if (!OPENLIKE.Widget) {
 		
 		// create an object from GET params
 		function getGetParams() {
-		    var vars = [], hash;
+		    var vars = {}, hash;
 		    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
 		    for(var i = 0; i < hashes.length; i++) {
 		        hash = hashes[i].split('=');
@@ -79,7 +80,7 @@ if (!OPENLIKE.Widget) {
 		    }
 		    return vars;
 		}
-		
+
 		// Build that widget
 		function build(enabled_services) {
 			
@@ -180,6 +181,7 @@ if (!OPENLIKE.Widget) {
 			build(preferred_services);
 		}
 		else if (xauthed_services.length) {
+			console.log('checking xauth');
 			xauth.checkServices(xauthed_services, function(verified_services) {
 				if (verified_services.length) {
 					build(verified_services);

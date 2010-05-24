@@ -7,11 +7,13 @@ var xauth = new function() {
 	 * @return Array<String> The names of the services that can be authenticated through XAuth
 	 */
 	this.getAvailableServices = function(services) {
-		return services.map(function(e, i) {
-			if(OPENLIKE.Sources[e].xauth) {
-				return e;
+		var available = [];
+		for (i = 0; i < services.length; i++) {
+			if (OPENLIKE.Sources[services[i]].xauth) {
+				available.push[services[i]];
 			}
-		});
+		}
+		return available;
 	}
 	
 	/*
@@ -22,7 +24,6 @@ var xauth = new function() {
 	 * @param Function Callback to call when authentication is complete
 	 */
 	this.checkServices = function(sources, callback) {
-		
 		
 		XAuth.retrieve({
 			retrieve: sources.map(function(e, i) {

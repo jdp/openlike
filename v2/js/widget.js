@@ -47,8 +47,7 @@ if (!window['OPENLIKE']) {
 			iframe = document.createElement('IFRAME');
 			iframe.src = ('http://localhost/~justin/openlike/widget.html?url=' + encodeURIComponent(cfg.url) + '&title=' + encodeURIComponent(cfg.title) + '&vertical=' + encodeURIComponent(cfg.vertical)); 
 			var widget = document.getElementById('openlike-widget');
-			console.log(script.parentNode);
-			script.parentNode.insertBefore(iframe, wrapper);
+			script.parentNode.insertBefore(iframe, script);
 	
 		};
 	
