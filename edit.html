@@ -3,14 +3,22 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta http-equiv="Content-Language" content="en-us" />
-		<title xmlns="">Openlike v2</title>
+		<title xmlns="">Edit Your OpenLike Preferences</title>
 		<link rel="stylesheet" type="text/css" media="screen,projection" href="v2/css/style.css" />
 		<script type="text/javascript" src="http://xauth.org/xauth.js"></script>
 		<script type="text/javascript" src="v2/widget.js"></script>
 	</head>
 	<body>
-		<script type="text/javascript">
-			OPENLIKE.buildWidget();
-		</script>
+		<h2>OpenLike remembers the services you use.</h2>
+		<p>
+			It's easy to manage your preferred sharing services with OpenLike.
+			Just click the icons below to enable and disable them.
+			Disabled services will show up as faded icons in this window, but won't show up at all on content pages.
+		</p>
+		<div class="wrapper">
+			<script type="text/javascript">
+				OPENLIKE.buildWidget({editable:true});
+			</script>
+		</div>
 	</body>
 </html>

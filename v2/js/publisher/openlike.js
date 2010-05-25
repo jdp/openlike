@@ -6,6 +6,8 @@ if (!window['OPENLIKE']) {
 	
 			var cfg = cfg? cfg: {};
 			cfg.url = cfg.url? cfg.url: window.location.href;
+			
+			var assetHost = document.location.href.match(/localhost/)? 'http://localhost/~justin/openlike': 'http://openlike.org';
 	
 			// Grab Open Graph metadata if possible
 			var og = {};
@@ -45,9 +47,7 @@ if (!window['OPENLIKE']) {
 			var script = document.getElementsByTagName('SCRIPT');
 			script = script[script.length - 1];
 			iframe = document.createElement('IFRAME');
-			console.log(iframe.src);
-			iframe.src = ('http://localhost/~justin/openlike/widget.html?url=' + encodeURIComponent(cfg.url) + '&title=' + encodeURIComponent(cfg.title) + '&vertical=' + encodeURIComponent(cfg.vertical)); 
-			var widget = document.getElementById('openlike-widget');
+			iframe.src = (assetHost+'/widget.html?url=' + encodeURIComponent(cfg.url) + '&title=' + encodeURIComponent(cfg.title) + '&vertical=' + encodeURIComponent(cfg.vertical)); 
 			script.parentNode.insertBefore(iframe, script);
 	
 		};

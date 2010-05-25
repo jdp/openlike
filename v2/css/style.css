@@ -1,20 +1,45 @@
-body, html {
+body {
+	color: #333333;
+	background-color: #ffffff;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 21px;
 	margin: 0;
 	padding: 0;
 }
 
-	body {
-		padding: 5px 10px;
-		background: #fff9aa;
-	}
+h2 {
+	background-color: #d1daec;
+	margin: 0;
+	padding: 16px;
+}
+
+p {
+	margin: 16px;
+}
+
+.wrapper {
+	margin: 16px;
+}
 	
 #openlike-edit-btn {
-	float: right;
-	font-size: 11px;
-	color: #0044cc;
-	line-height: 25px;
+	color: #999999;
+	text-shadow: 1px 1px #eeeeee;
 	cursor: pointer;
 	font-weight: normal;
+	text-transform: capitalize;
+	background-color: #dddddd;
+	padding: 10px;
+	margin: 24px 0 0 0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	display: block;
+	clear: left;
+	float: left;
+}
+
+#openlike-edit-btn.enabled {
+	color: #333333;
 }
 
 #openlike-widget {
@@ -63,3 +88,24 @@ body, html {
 				display: block;
 				margin-right: 5px !important;
 			}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+
+.clearfix {
+	display: inline-block;
+}
+
+html[xmlns] .clearfix {
+	display: block;
+}
+
+* html .clearfix {
+	height: 1%;
+}
