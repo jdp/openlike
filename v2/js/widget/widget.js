@@ -183,14 +183,20 @@ OPENLIKE.buildWidget = function(cfg) {
 								e.preventDefault();
 								return false;
 							}
-							else {
-								if (typeof console != 'undefined') {
-									console.log('prefs already stored', localStorage.openlike);
-								}
-							}
 							// If in edit mode, button clicks enable/disable sources
 							if (OPENLIKE.util.hasClass(widget, 'edit') && cfg.editable) {
+								// Toggle the button on the edit window
 								OPENLIKE.util.toggleClass(this, 'enabled');
+								// Get the corresponding button on the content window and toggle it too
+								var other_widget = window.opener.document.getElementById('openlike-widget');
+								for (var i = 0; i < other_widget.childNodes[1].childNodes.length; i++) {
+									var other_button = other_widget.childNodes[1].childNodes[i].childNodes[0];
+									if (other_button.getAttribute('data-service') == this.getAttribute('data-service')) {
+										OPENLIKE.util.toggleClass(other_button, 'enabled');
+										break;
+									}
+								}
+								// Re-enable the save button
 								OPENLIKE.util.addClass(document.getElementById('openlike-edit-btn'), 'enabled');
 								e.preventDefault();
 								return false;
