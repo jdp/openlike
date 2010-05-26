@@ -3,7 +3,7 @@
 
 if (!window.OPENLIKE) {
 	window.OPENLIKE = {
-		assetHost: document.location.href.match(/localhost/)? 'http://localhost/~justin/openlike': 'http://openlike.org',
+		assetHost: document.location.href.match(/localhost/)? document.location.href.match(/.*\/openlike/): 'http://openlike.org',
 		util: {
 			update: function() {
 				var obj = arguments[0], i = 1, len=arguments.length, attr;
