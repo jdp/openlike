@@ -43,13 +43,17 @@
 	text-indent: -9999em;
 }
 
+.openlike ul li a.openlike-facebook {
+	width: 53px;
+}
+
 .openlike ul li a.openlike-hunch        { background-position:    0   0; }
 .openlike ul li a.openlike-stumbleupon  { background-position:  -25px 0; }
 .openlike ul li a.openlike-reddit       { background-position:  -50px 0; }
 .openlike ul li a.openlike-digg         { background-position:  -75px 0; }
 .openlike ul li a.openlike-google       { background-position: -100px 0; }
 .openlike ul li a.openlike-twitter      { background-position: -125px 0; }
-.openlike ul li a.openlike-facebook     { background-position: -150px 0; }
+.openlike ul li a.openlike-facebook     { background-position: -400px 0; }
 .openlike ul li a.openlike-goodreads    { background-position: -175px 0; }
 .openlike ul li a.openlike-netflix      { background-position: -200px 0; }
 .openlike ul li a.openlike-amazon       { background-position: -225px 0; }
