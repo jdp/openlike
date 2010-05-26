@@ -194,7 +194,7 @@ OPENLIKE.buildWidget = function(cfg) {
 				OPENLIKE.UI.openEditor(cfg.vertical);
 				return false;
 			}
-			button.appendChild(document.createTextNode('[+/-]'));
+			button.appendChild(document.createTextNode('edit'));
 			wrapper.appendChild(button);
 		}
 	
