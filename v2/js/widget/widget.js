@@ -3,7 +3,7 @@
 
 if (!window.OPENLIKE) {
 	window.OPENLIKE = {
-		assetHost: document.location.href.match(/localhost/)? document.location.href.match(/.*\/openlike/): 'http://openlike.org',
+		assetHost: document.location.href.match(/openlike.org/)? 'http://openlike.org': document.location.href.match(/.*\/openlike/),
 		util: {
 			update: function() {
 				var obj = arguments[0], i = 1, len=arguments.length, attr;
@@ -159,6 +159,8 @@ OPENLIKE.buildWidget = function(cfg) {
 			if (source = OPENLIKE.Sources[cfg.s[i]]) {
 				source = OPENLIKE.prepSource(cfg.s[i], source);
 				li = document.createElement('LI');
+				// Some sources (Facebook Like :/) require custom HTML to work
+				// Only show the custom HTML when not in edit mode
 				if (source.html && !cfg.editable) {
 					a = source.html(cfg);
 				}
@@ -353,8 +355,10 @@ OPENLIKE.Verticals = {
 	
 }
 
-// Sources that can be used out-of-box (in alphabetical order)
-// The OPENLIKE.Sources object can be extended in a separate js file
+/*
+ * Sources that can be used out-of-box (in alphabetical order)
+ * The OPENLIKE.Sources object can be extended in a separate js file
+ */
 OPENLIKE.Sources = {
 	digg: {
 		url: 'http://digg.com/',
