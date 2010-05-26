@@ -96,7 +96,7 @@ OPENLIKE.buildWidget = function(cfg) {
 			title:    document.title,
 			vertical: 'default',
 			header:   'Like this:',
-			css:       OPENLIKE.assetHost + '/v1/openlike.css',
+			css:       OPENLIKE.assetHost + '/v2/css/openlike.css',
 			s:         (function() {
 			         		return OPENLIKE.Verticals[vertical];
 			           })()
