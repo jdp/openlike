@@ -64,7 +64,8 @@
 .openlike ul li a.openlike-imdb         { background-position: -375px 0; }
 .openlike ul li a.openlike-flixster     { background-position: -400px 0; }
 .openlike ul li a.openlike-getglue      { background-position: -425px 0; }
-.openlike ul li a.openlike-facebook     { background-position: -450px 0; }
+.openlike ul li a.openlike-weread       { background-position: -450px 0; }
+.openlike ul li a.openlike-facebook     { background-position: -475px 0; }
 
 iframe.openlike {
 	border: none;

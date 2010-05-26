@@ -88,9 +88,12 @@ if (!window.OPENLIKE) {
  */
 OPENLIKE.buildWidget = function(cfg) {
 	
-	var getParams = getGetParams(),
-		vertical  = (getParams.vertical && (getParams.vertical != ''))? getParams.vertical: 'default',
-	 	defaults  = {
+	var getParams = getGetParams();
+	var vertical  = (getParams.vertical && (getParams.vertical != ''))? getParams.vertical: 'default';
+	console.log('loc', document.location.href);
+	console.log('get params', getParams);
+	console.log('vertical', vertical);
+	var defaults  = {
 			editable: false,
 			url:      document.location.href,
 			title:    document.title,
@@ -109,6 +112,9 @@ OPENLIKE.buildWidget = function(cfg) {
 	// Returns an object representation of the GET parameters
 	function getGetParams() {
 	    var vars = {}, hash;
+		if (window.location.href.indexOf('?') == -1) {
+			return vars;
+		}
 	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
 	    for(var i = 0; i < hashes.length; i++) {
 	        hash = hashes[i].split('=');
@@ -179,7 +185,6 @@ OPENLIKE.buildWidget = function(cfg) {
 					a.onclick = (function(src) {
 						return function(e) {
 							var widget = document.getElementById('openlike-widget');
-							console.log('widget', widget, 'config', cfg);
 							// If no preferences are available and not in edit mode already, ENGAGE EDIT MODE
 							if (OPENLIKE.Preferences.isNewUser() && !cfg.editable) {
 								OPENLIKE.UI.openEditor(cfg.vertical, (e.srcElement || e.target).href);
@@ -335,6 +340,7 @@ OPENLIKE.Verticals = {
 		'goodreads',
 		'shelfari',
 		'librarything',
+		'weread',
 		'getglue',
 		'hunch'
 	],
@@ -517,5 +523,37 @@ OPENLIKE.Sources = {
 			return 'http://getglue.com/search?q=' + title;
 		},
 		title: 'Search this on GetGlue'
+	},
+	goodreads: {
+		url: 'http://goodreads.com',
+		basicLink: function(a, cfg) {
+			var title = encodeURIComponent(cfg.title);
+			return 'http://www.goodreads.com/search/search?search_type=books&search[query]=' + title;
+		},
+		title: 'Search this on GoodReads'
+	},
+	shelfari: {
+		url: 'http://shelfari.com',
+		basicLink: function(a, cfg) {
+			var title = encodeURIComponent(cfg.title);
+			return 'http://www.shelfari.com/search/books?Keywords=' + title;
+		},
+		title: 'Search this on Shelfari'
+	},
+	librarything: {
+		url: 'http://librarything.com',
+		basicLink: function(a, cfg) {
+			var title = encodeURIComponent(cfg.title);
+			return 'http://www.librarything.com/search_works.php?q=' + title;
+		},
+		title: 'Search this on LibraryThing'
+	},
+	weread: {
+		url: 'http://weread.com',
+		basicLink: function(a, cfg) {
+			var title = encodeURIComponent(cfg.title);
+			return 'http://weread.com/search/book/' + title;
+		},
+		title: 'Search this on WeRead'
 	}
 };
