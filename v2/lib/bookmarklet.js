@@ -2,7 +2,7 @@ javascript:void(
 	
 	(function() {
 		
-		var assetHost = 'http://localhost/~justin/openlike';
+		var assetHost = 'http://justinpoliey.com/openlike';
 		
 		function addCss(url) {
 			
