@@ -95,7 +95,7 @@ OPENLIKE.buildWidget = function(cfg) {
 			url:      document.location.href,
 			title:    document.title,
 			vertical: 'default',
-			header:   'Like this:',
+			header:   'OpenLike:',
 			css:       OPENLIKE.assetHost + '/v2/css/openlike.css',
 			s:         (function() {
 			         		return OPENLIKE.Verticals[vertical];
@@ -144,10 +144,6 @@ OPENLIKE.buildWidget = function(cfg) {
 		wrapper.setAttribute('data-vertical', cfg.vertical)
 		if (cfg.header) {
 			title = document.createElement('P');
-			title.onclick = function(e) {
-				OPENLIKE.UI.openEditor(cfg.vertical);
-				return false;
-			};
 			title.innerHTML = OPENLIKE.util.escape(cfg.header);
 			wrapper.appendChild(title);
 		}
@@ -183,6 +179,7 @@ OPENLIKE.buildWidget = function(cfg) {
 					a.onclick = (function(src) {
 						return function(e) {
 							var widget = document.getElementById('openlike-widget');
+							console.log('widget', widget, 'config', cfg);
 							// If no preferences are available and not in edit mode already, ENGAGE EDIT MODE
 							if (OPENLIKE.Preferences.isNewUser() && !cfg.editable) {
 								OPENLIKE.UI.openEditor(cfg.vertical, (e.srcElement || e.target).href);
@@ -203,7 +200,7 @@ OPENLIKE.buildWidget = function(cfg) {
 									}
 								}
 								// Re-enable the save button
-								OPENLIKE.util.addClass(document.getElementById('openlike-edit-btn'), 'enabled');
+								OPENLIKE.util.addClass(document.getElementById('openlike-save-btn'), 'enabled');
 								e.preventDefault();
 								return false;
 							}
@@ -232,14 +229,15 @@ OPENLIKE.buildWidget = function(cfg) {
 		}
 		wrapper.appendChild(list);
 	
-		// Append an edit button to the widget if EDIT MODE ENGAGED
+		// Append either edit or save button to widget depending on mode
+		var button = document.createElement('a');
 		if (cfg.editable) {
-			var editBtn = document.createElement('a');
-			editBtn.id = 'openlike-edit-btn';
+			// Append the save button if EDIT MODE ENGAGED
+			button.id = 'openlike-save-btn';
 			if (OPENLIKE.Preferences.isNewUser()) {
-				OPENLIKE.util.addClass(editBtn, 'enabled');
+				OPENLIKE.util.addClass(button, 'enabled');
 			}
-			editBtn.onclick = (function(config) {
+			button.onclick = (function(config) {
 				return function() {
 					if (OPENLIKE.util.hasClass(this, 'enabled')) {
 						OPENLIKE.UI.updateServicePreferences();
@@ -251,11 +249,24 @@ OPENLIKE.buildWidget = function(cfg) {
 					window.close();
 				}
 			})(cfg);
-			var button_text = 'Save '+cfg.vertical+' Preferences and ' + (cfg.share_url? 'Share': 'Close');
-			editBtn.appendChild(document.createTextNode(button_text));
-			script.parentNode.insertBefore(editBtn, script.nextSibling);
+			var button_text = 'Save '+cfg.vertical+' Preferences and '+(cfg.share_url? 'Share': 'Close');
+			button.appendChild(document.createTextNode(button_text));
+			script.parentNode.insertBefore(button, script.nextSibling);
 		}
+		else {
+			// Otherwise, show the edit button
+			button.id = 'openlike-edit-btn';
+			button.href = '#';
+			button.onclick = function(e) {
+				OPENLIKE.UI.openEditor(cfg.vertical);
+				return false;
+			}
+			button.appendChild(document.createTextNode('[+/-]'));
+			wrapper.appendChild(button);
+		}
+		
 
+		// Last step of the build process: attach the widget to the page
 		script.parentNode.insertBefore(wrapper, script);
 		wrapper = title = list = li = script = source = null;
 	}

@@ -22,7 +22,7 @@ p {
 	margin: 16px;
 }
 	
-#openlike-edit-btn {
+#openlike-save-btn {
 	color: #999999;
 	text-shadow: 1px 1px #eeeeee;
 	cursor: pointer;
@@ -38,14 +38,22 @@ p {
 	float: left;
 }
 
-#openlike-edit-btn.enabled {
+#openlike-save-btn.enabled {
 	color: #333333;
+}
+
+#openlike-edit-btn {
+	line-height: 25px;
+	float: left;
+	color: #0044cc;
+	text-decoration: none;
+	font-size: 11px;
 }
 
 #openlike-widget {
 	font-family: arial;
 	font-size: 13px;
-	margin: 5px;
+	margin: 4px;
 }
 
 	#openlike-widget p,
