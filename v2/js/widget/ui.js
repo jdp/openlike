@@ -3,9 +3,26 @@ OPENLIKE.UI = new function() {
 	/*
 	 * Opens the preference editor pop up window.
 	 */
-	this.openEditor = function(vertical) {
-		var win_features = "width=600,height=300,menubar=no,location=no,resizable=no,scrollbars=no,status=no";
-		var edit_win = window.open(OPENLIKE.assetHost+'/edit.html?vertical='+encodeURIComponent(vertical), 'OPENLIKE_Editor', win_features);
+	this.openEditor = function(vertical, share_url) {
+		var win_features = OPENLIKE.util.serialize({
+			'width':      600,
+			'height' :    300,
+			'menubar':    'no',
+			'location':   'no',
+			'resizable':  'no',
+			'scrollbars': 'no',
+			'status':     'no'
+		}, {separator: ','});
+		var params = OPENLIKE.util.serialize((function() {
+			var params = {
+				'vertical': vertical? vertical: 'default'
+			};
+			if (share_url) {
+				params.share_url = share_url;
+			}
+			return params;
+		})());
+		var edit_win = window.open(OPENLIKE.assetHost+'/edit.html?'+params, 'OPENLIKE_Editor', win_features);
 	}
 
 	/*
@@ -13,17 +30,17 @@ OPENLIKE.UI = new function() {
 	 */
 	this.updateServicePreferences = function() {
 		var widget = document.getElementById('openlike-widget');
-		var edit_buttons = [];
+		var edit_items = [];
 		var vertical = widget.getAttribute('data-vertical');
 		
 		for (var i = 0; i < widget.childNodes[1].childNodes.length; i++) {
-			edit_buttons.push(widget.childNodes[1].childNodes[i].childNodes[0]);
+			edit_items.push(widget.childNodes[1].childNodes[i]);
 		}
 		
-		for (i = 0; i < edit_buttons.length; i++) {
-			var button = edit_buttons[i];
-			var enabled = OPENLIKE.util.hasClass(button, 'enabled');
-			OPENLIKE.Preferences[enabled? 'show': 'hide'](vertical, button.getAttribute('data-service'));
+		for (i = 0; i < edit_items.length; i++) {
+			var item = edit_items[i];
+			var enabled = OPENLIKE.util.hasClass(item, 'enabled');
+			OPENLIKE.Preferences[enabled? 'show': 'hide'](vertical, item.getAttribute('data-service'));
 		}
 		
 	}

@@ -56,12 +56,22 @@ p {
 		
 		#openlike-widget ul li {
 			padding: 0 !important;
-			margin: 0 !important;
+			margin: 0 5px 0 0 !important;
+			opacity: 0.2;
+			display: none;
+		}
+		
+		#openlike-widget ul li.enabled {
+			opacity: 1;
+			display: block;
+		}
+		
+		#openlike-widget.edit ul li {
+			display: block;
 		}
 		
 			#openlike-widget ul li a {
-				opacity: .2;
-				display: none;
+				display: block;
 				-moz-border-radius: 3px;
 				-webkit-border-radius: 3px;
 			}
@@ -76,17 +86,6 @@ p {
 			
 			#openlike-widget ul li a.openlike-yahoo {
 				background-image: url(http://imgur.com/tqvui.png);
-			}
-		
-			#openlike-widget ul li a.enabled {
-				opacity: 1;
-				margin-right: 5px !important;
-				display: block;
-			}
-			
-			#openlike-widget.edit ul li a {
-				display: block;
-				margin-right: 5px !important;
 			}
 
 .clearfix:after {

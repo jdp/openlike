@@ -7,7 +7,7 @@ if (!window.OPENLIKE) {
 		util: {
 			update: function() {
 				var obj = arguments[0], i = 1, len=arguments.length, attr;
-				for (; i<len; i++) {
+				for (; i < len; i++) {
 					for (attr in arguments[i]) {
 						if (arguments[i].hasOwnProperty(attr)) {
 							obj[attr] = arguments[i][attr];
@@ -48,7 +48,7 @@ if (!window.OPENLIKE) {
 				if (!OPENLIKE.util.hasClass(el, klass)) {
 					return false;
 				}
-				el.className = el.className.replace(new RegExp('\\b'+klass+'\\b'));
+				el.className = el.className.replace(new RegExp('\\b'+klass+'\\b'), '');
 				return true;
 			},
 			toggleClass: function(el, klass) {
@@ -61,7 +61,7 @@ if (!window.OPENLIKE) {
 					urlencode: true
 				};
 				var pairs = [];
-				options = OPENLIKE.util.update(defaults, options? options: {});
+				var options = OPENLIKE.util.update(defaults, options? options: {});
 				for (prop in obj) {
 					if (obj.hasOwnProperty(prop)) {
 						var key = options.urlencode? encodeURIComponent(prop): prop;
@@ -144,6 +144,10 @@ OPENLIKE.buildWidget = function(cfg) {
 		wrapper.setAttribute('data-vertical', cfg.vertical)
 		if (cfg.header) {
 			title = document.createElement('P');
+			title.onclick = function(e) {
+				OPENLIKE.UI.openEditor(cfg.vertical);
+				return false;
+			};
 			title.innerHTML = OPENLIKE.util.escape(cfg.header);
 			wrapper.appendChild(title);
 		}
@@ -155,12 +159,12 @@ OPENLIKE.buildWidget = function(cfg) {
 			if (source = OPENLIKE.Sources[cfg.s[i]]) {
 				source = OPENLIKE.prepSource(cfg.s[i], source);
 				li = document.createElement('LI');
-				if (source.html) {
+				if (source.html && !cfg.editable) {
 					a = source.html(cfg);
 				}
 				else {
 					a = document.createElement('A');
-					a.className = source.klass;
+					OPENLIKE.util.addClass(a, source.klass);
 					if (enabled_services.indexOf(source.name) > -1) {
 						OPENLIKE.util.addClass(a, 'enabled');
 					}
@@ -178,21 +182,21 @@ OPENLIKE.buildWidget = function(cfg) {
 						return function(e) {
 							var widget = document.getElementById('openlike-widget');
 							// If no preferences are available and not in edit mode already, ENGAGE EDIT MODE
-							if (!localStorage.openlike && !cfg.editable) {
-								OPENLIKE.UI.openEditor(cfg.vertical);
+							if (OPENLIKE.Preferences.isNewUser() && !cfg.editable) {
+								OPENLIKE.UI.openEditor(cfg.vertical, (e.srcElement || e.target).href);
 								e.preventDefault();
 								return false;
 							}
 							// If in edit mode, button clicks enable/disable sources
 							if (OPENLIKE.util.hasClass(widget, 'edit') && cfg.editable) {
 								// Toggle the button on the edit window
-								OPENLIKE.util.toggleClass(this, 'enabled');
+								OPENLIKE.util.toggleClass(this.parentNode, 'enabled');
 								// Get the corresponding button on the content window and toggle it too
 								var other_widget = window.opener.document.getElementById('openlike-widget');
 								for (var i = 0; i < other_widget.childNodes[1].childNodes.length; i++) {
-									var other_button = other_widget.childNodes[1].childNodes[i].childNodes[0];
-									if (other_button.getAttribute('data-service') == this.getAttribute('data-service')) {
-										OPENLIKE.util.toggleClass(other_button, 'enabled');
+									var other_item = other_widget.childNodes[1].childNodes[i];
+									if (other_item.getAttribute('data-service') == this.parentNode.getAttribute('data-service')) {
+										OPENLIKE.util.toggleClass(other_item, 'enabled');
 										break;
 									}
 								}
@@ -215,6 +219,11 @@ OPENLIKE.buildWidget = function(cfg) {
 						};
 					})(source);
 				}
+				OPENLIKE.util.addClass(li, source.klass);
+				if (enabled_services.indexOf(source.name) > -1) {
+					OPENLIKE.util.addClass(li, 'enabled');
+				}
+				li.setAttribute('data-service', source.name);
 				li.appendChild(a);
 				list.appendChild(li);
 			}
@@ -225,13 +234,23 @@ OPENLIKE.buildWidget = function(cfg) {
 		if (cfg.editable) {
 			var editBtn = document.createElement('a');
 			editBtn.id = 'openlike-edit-btn';
-			editBtn.onclick = function() {
-				if (OPENLIKE.util.hasClass(this, 'enabled')) {
-					OPENLIKE.UI.updateServicePreferences();
-					OPENLIKE.util.removeClass(this, 'enabled');
-				}
+			if (OPENLIKE.Preferences.isNewUser()) {
+				OPENLIKE.util.addClass(editBtn, 'enabled');
 			}
-			editBtn.appendChild(document.createTextNode('Save '+cfg.vertical+' Preferences'));
+			editBtn.onclick = (function(config) {
+				return function() {
+					if (OPENLIKE.util.hasClass(this, 'enabled')) {
+						OPENLIKE.UI.updateServicePreferences();
+						OPENLIKE.util.removeClass(this, 'enabled');
+					}
+					if (config.share_url) {
+						window.opener.open(config.share_url, '_blank');
+					}
+					window.close();
+				}
+			})(cfg);
+			var button_text = 'Save '+cfg.vertical+' Preferences and ' + (cfg.share_url? 'Share': 'Close');
+			editBtn.appendChild(document.createTextNode(button_text));
 			script.parentNode.insertBefore(editBtn, script.nextSibling);
 		}
 
@@ -295,6 +314,34 @@ OPENLIKE.Verticals = {
 		'hunch'
 	],
 	
+	'book': [
+		'amazon',
+		'goodreads',
+		'shelfari',
+		'librarything',
+		'getglue',
+		'hunch'
+	],
+	
+	'music': [
+		'lastfm',
+		'pandora',
+		'getglue',
+		'hunch'
+	],
+	
+	'video_game': [
+		'gamespot',
+		'getglue',
+		'hunch'
+	],
+	
+	'tv_show': [
+		'imdb',
+		'getglue',
+		'hunch'
+	],
+	
 	'default': [
 		'google',
 		'facebook',
@@ -319,18 +366,18 @@ OPENLIKE.Sources = {
 		title: 'Like this on Digg'
 	},
 	facebook: {
-		/* TODO: add this back. doesn't work well w/ preference saving and editing
 		html: function(cfg) {
 			// <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fdevelopers.facebook.com%2F&amp;layout=button_count&amp;show_faces=false&amp;width=25&amp;action=like&amp;colorscheme=light" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:25px; height:px"></iframe>
 			var elt = document.createElement('IFRAME'),
 				width = 53;
+			elt.onclick = function(e) {
+				alert('clicked');
+			};
 			elt.src = 'http://www.facebook.com/plugins/like.php?href=' + encodeURIComponent(cfg.url) + '&amp;layout=button_count&amp;show_faces=false&amp;width=' + width + '&amp;action=like&amp;colorscheme=light';
 			OPENLIKE.util.update(elt, {scrolling: 'no', frameBorder: '0', allowTransparency: 'true'});
 			OPENLIKE.util.update(elt.style, {border: 'none', overflow: 'hidden', width: width+'px', height: '24px', padding: '1px 0 0 0'});
-			//return elt;
-			return false;
+			return elt;
 		},
-		*/
 		url: 'http://facebook.com',
 		basicLink: function(a, cfg) {
 			var url = encodeURIComponent(cfg.url),
@@ -357,12 +404,10 @@ OPENLIKE.Sources = {
 				category = cfg.type ? '&category=' + encodeURIComponent(cfg.type) : '';
 			return 'http://hunch.com/openlike/?url=' + url + '&title=' + title + category;
 		},
-		/*
 		popup: {
 			target: '_blank',
 			attrs: 'width=610,height=600'
 		},
-		*/
 		title: 'Add this to your Hunch taste profile'
 	},
 	reddit: {
