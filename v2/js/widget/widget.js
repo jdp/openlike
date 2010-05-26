@@ -1,78 +1,8 @@
 // TODO - add full support for the "open graph" meta elements
 // TODO - add more specifics to each service, such as buzz "imageurl"
 
-if (!window.OPENLIKE) {
-	window.OPENLIKE = {
-		assetHost: document.location.href.match(/openlike.org/)? 'http://openlike.org': document.location.href.match(/.*\/openlike/),
-		util: {
-			update: function() {
-				var obj = arguments[0], i = 1, len=arguments.length, attr;
-				for (; i < len; i++) {
-					for (attr in arguments[i]) {
-						if (arguments[i].hasOwnProperty(attr)) {
-							obj[attr] = arguments[i][attr];
-						}
-					}
-				}
-				return obj;
-			},
-			escape: function(s) {
-				return ((s == null) ? '' : s)
-					.toString()
-					.replace(/[<>"&\\]/g, function(s) {
-						switch(s) {
-							case '<': return '&lt;';
-							case '>': return '&gt;';
-							case '"': return '\"';
-							case '&': return '&amp;';
-							case '\\': return '\\\\';
-							default: return s;
-						}
-					});
-			},
-			notundef: function(a, b) {
-				return typeof(a) == 'undefined' ? b : a;
-			},
-			hasClass: function(el, klass) {
-				var regexpr = new RegExp('\\b'+klass+'\\b');
-				return el.className.match(regexpr)? true: false;
-			},
-			addClass: function(el, klass) {
-				if (OPENLIKE.util.hasClass(el, klass)) {
-					return false;
-				}
-				el.className += ' ' + klass;
-				return true;
-			},
-			removeClass: function(el, klass) {
-				if (!OPENLIKE.util.hasClass(el, klass)) {
-					return false;
-				}
-				el.className = el.className.replace(new RegExp('\\b'+klass+'\\b'), '');
-				return true;
-			},
-			toggleClass: function(el, klass) {
-				return OPENLIKE.util.hasClass(el, klass)? OPENLIKE.util.removeClass(el, klass): OPENLIKE.util.addClass(el, klass);
-			},
-			serialize: function(obj, options) {
-				var defaults = {
-					separator: '&',
-					join: '=',
-					urlencode: true
-				};
-				var pairs = [];
-				var options = OPENLIKE.util.update(defaults, options? options: {});
-				for (prop in obj) {
-					if (obj.hasOwnProperty(prop)) {
-						var key = options.urlencode? encodeURIComponent(prop): prop;
-						var value = options.urlencode? encodeURIComponent(obj[prop]): obj[prop];
-						pairs.push(key+options.join+value);
-					}
-				}
-				return pairs.join(options.separator);
-			}
-		}
-	};
+var OPENLIKE = {
+	assetHost: document.location.href.match(/openlike.org/)? 'http://openlike.org': document.location.href.match(/.*\/openlike/)
 }
 
 /*
@@ -87,12 +17,9 @@ if (!window.OPENLIKE) {
  * @option String type     the type of the object to like, e.g. product, activity, sport, bar, company (optional)
  */
 OPENLIKE.buildWidget = function(cfg) {
-	
+
 	var getParams = getGetParams();
-	var vertical  = (getParams.vertical && (getParams.vertical != ''))? getParams.vertical: 'default';
-	console.log('loc', document.location.href);
-	console.log('get params', getParams);
-	console.log('vertical', vertical);
+	var vertical  = (getParams['vertical'] && (getParams['vertical'] != ''))? getParams['vertical']: 'default';
 	var defaults  = {
 			editable: false,
 			url:      document.location.href,
@@ -107,8 +34,8 @@ OPENLIKE.buildWidget = function(cfg) {
 		i, len, wrapper, title, list, li, a, source, css;
 
 	// Merge defaults with get parameters, then merge that with configuration argument for final configuration
-	cfg = OPENLIKE.util.update(defaults, getParams, cfg);
-	
+	cfg = OPENLIKE.Util.update(defaults, getParams, cfg);
+
 	// Returns an object representation of the GET parameters
 	function getGetParams() {
 	    var vars = {}, hash;
@@ -126,10 +53,11 @@ OPENLIKE.buildWidget = function(cfg) {
 	/*
 	 * Callback to build the widget.
 	 * Called after vertical has been identified and appropriate sources selected.
+	 * @scope local OPENLIKE.buildWidget
 	 * @param Array<String> enabled_services Services that are enabled and available in the widget
 	 */
 	function build(enabled_services) {
-		
+	
 		// Add CSS
 		if (cfg.css) {
 			css = document.createElement('LINK');
@@ -150,7 +78,7 @@ OPENLIKE.buildWidget = function(cfg) {
 		wrapper.setAttribute('data-vertical', cfg.vertical)
 		if (cfg.header) {
 			title = document.createElement('P');
-			title.innerHTML = OPENLIKE.util.escape(cfg.header);
+			title.innerHTML = OPENLIKE.Util.escape(cfg.header);
 			wrapper.appendChild(title);
 		}
 
@@ -168,13 +96,13 @@ OPENLIKE.buildWidget = function(cfg) {
 				}
 				else {
 					a = document.createElement('A');
-					OPENLIKE.util.addClass(a, source.klass);
+					OPENLIKE.Util.addClass(a, source.klass);
 					if (enabled_services.indexOf(source.name) > -1) {
-						OPENLIKE.util.addClass(a, 'enabled');
+						OPENLIKE.Util.addClass(a, 'enabled');
 					}
 					a.setAttribute('data-service', source.name);
 					a.href = '#';
-					a.innerHTML = OPENLIKE.util.escape(source.name);
+					a.innerHTML = OPENLIKE.Util.escape(source.name);
 					if (source.title) {
 						a.title = source.title;
 					}
@@ -192,20 +120,20 @@ OPENLIKE.buildWidget = function(cfg) {
 								return false;
 							}
 							// If in edit mode, button clicks enable/disable sources
-							if (OPENLIKE.util.hasClass(widget, 'edit') && cfg.editable) {
+							if (OPENLIKE.Util.hasClass(widget, 'edit') && cfg.editable) {
 								// Toggle the button on the edit window
-								OPENLIKE.util.toggleClass(this.parentNode, 'enabled');
+								OPENLIKE.Util.toggleClass(this.parentNode, 'enabled');
 								// Get the corresponding button on the content window and toggle it too
 								var other_widget = window.opener.document.getElementById('openlike-widget');
 								for (var i = 0; i < other_widget.childNodes[1].childNodes.length; i++) {
 									var other_item = other_widget.childNodes[1].childNodes[i];
 									if (other_item.getAttribute('data-service') == this.parentNode.getAttribute('data-service')) {
-										OPENLIKE.util.toggleClass(other_item, 'enabled');
+										OPENLIKE.Util.toggleClass(other_item, 'enabled');
 										break;
 									}
 								}
 								// Re-enable the save button
-								OPENLIKE.util.addClass(document.getElementById('openlike-save-btn'), 'enabled');
+								OPENLIKE.Util.addClass(document.getElementById('openlike-save-btn'), 'enabled');
 								e.preventDefault();
 								return false;
 							}
@@ -223,9 +151,9 @@ OPENLIKE.buildWidget = function(cfg) {
 						};
 					})(source);
 				}
-				OPENLIKE.util.addClass(li, source.klass);
+				OPENLIKE.Util.addClass(li, source.klass);
 				if (enabled_services.indexOf(source.name) > -1) {
-					OPENLIKE.util.addClass(li, 'enabled');
+					OPENLIKE.Util.addClass(li, 'enabled');
 				}
 				li.setAttribute('data-service', source.name);
 				li.appendChild(a);
@@ -233,20 +161,20 @@ OPENLIKE.buildWidget = function(cfg) {
 			}
 		}
 		wrapper.appendChild(list);
-	
+
 		// Append either edit or save button to widget depending on mode
 		var button = document.createElement('a');
 		if (cfg.editable) {
 			// Append the save button if EDIT MODE ENGAGED
 			button.id = 'openlike-save-btn';
 			if (OPENLIKE.Preferences.isNewUser()) {
-				OPENLIKE.util.addClass(button, 'enabled');
+				OPENLIKE.Util.addClass(button, 'enabled');
 			}
 			button.onclick = (function(config) {
 				return function() {
-					if (OPENLIKE.util.hasClass(this, 'enabled')) {
+					if (OPENLIKE.Util.hasClass(this, 'enabled')) {
 						OPENLIKE.UI.updateServicePreferences();
-						OPENLIKE.util.removeClass(this, 'enabled');
+						OPENLIKE.Util.removeClass(this, 'enabled');
 					}
 					if (config.share_url) {
 						window.opener.open(config.share_url, '_blank');
@@ -269,23 +197,23 @@ OPENLIKE.buildWidget = function(cfg) {
 			button.appendChild(document.createTextNode('[+/-]'));
 			wrapper.appendChild(button);
 		}
-		
+	
 
 		// Last step of the build process: attach the widget to the page
 		script.parentNode.insertBefore(wrapper, script);
 		wrapper = title = list = li = script = source = null;
 	}
-	
+
 	// Determine, of the defaults, which to use
 	// in this order: preferred, xauthed, viewed, default
 	var preferred_services = OPENLIKE.Preferences.get(cfg.vertical);
-	var xauthed_services = xauth.getAvailableServices(cfg.s);
+	var xauthed_services = OPENLIKE.XAuthHelper.getAvailableServices(cfg.s);
 	var default_services = OPENLIKE.Verticals[cfg.vertical]? OPENLIKE.Verticals[cfg.vertical]: OPENLIKE.Verticals['default'];
 	if (preferred_services.length) {
 		build(preferred_services);
 	}
 	else if (xauthed_services.length) {
-		xauth.checkServices(xauthed_services, function(verified_services) {
+		OPENLIKE.XAuthHelper.checkServices(xauthed_services, function(verified_services) {
 			if (verified_services.length) {
 				build(verified_services);
 			}
@@ -297,24 +225,24 @@ OPENLIKE.buildWidget = function(cfg) {
 	else {
 		build(default_services);
 	}
-	
-}
+
+};
 
 OPENLIKE.prepSource = function(name, source) {
-	source = OPENLIKE.util.update({}, source);
+	source = OPENLIKE.Util.update({}, source);
 	source.name = name;
-	source.target = OPENLIKE.util.notundef(source.target, '_blank');
-	source.klass = 'openlike-' + OPENLIKE.util.escape(name);
+	source.target = OPENLIKE.Util.notundef(source.target, '_blank');
+	source.klass = 'openlike-' + OPENLIKE.Util.escape(name);
 	if (source.popup) {
 		if (typeof(source.popup) != 'object') source.popup = {};
-		source.popup.target = OPENLIKE.util.notundef(source.popup.target, '_blank');
-		source.popup.attrs = OPENLIKE.util.notundef(source.popup.attrs, 'width=360,height=360');
+		source.popup.target = OPENLIKE.Util.notundef(source.popup.target, '_blank');
+		source.popup.attrs = OPENLIKE.Util.notundef(source.popup.attrs, 'width=360,height=360');
 	}
 	return source;
-}
+};
 
 OPENLIKE.Verticals = {
-	
+
 	'news': [
 		'facebook',
 		'twitter',
@@ -322,7 +250,7 @@ OPENLIKE.Verticals = {
 		'yahoo',
 		'reddit'
 	],
-	
+
 	'movie': [
 		'facebook',
 		'twitter',
@@ -334,7 +262,7 @@ OPENLIKE.Verticals = {
 		'amazon',
 		'hunch'
 	],
-	
+
 	'book': [
 		'amazon',
 		'goodreads',
@@ -344,26 +272,26 @@ OPENLIKE.Verticals = {
 		'getglue',
 		'hunch'
 	],
-	
+
 	'music': [
 		'lastfm',
 		'pandora',
 		'getglue',
 		'hunch'
 	],
-	
+
 	'video_game': [
 		'gamespot',
 		'getglue',
 		'hunch'
 	],
-	
+
 	'tv_show': [
 		'imdb',
 		'getglue',
 		'hunch'
 	],
-	
+
 	'default': [
 		'google',
 		'facebook',
@@ -372,15 +300,15 @@ OPENLIKE.Verticals = {
 		'reddit',
 		'stumbleupon'
 	]
-	
-}
+
+};
 
 /*
  * Sources that can be used out-of-box (in alphabetical order)
  * The OPENLIKE.Sources object can be extended in a separate js file
  */
 OPENLIKE.Sources = {
-	digg: {
+	'digg': {
 		url: 'http://digg.com/',
 		basicLink: function(a, cfg) {
 			var url = encodeURIComponent(cfg.url),
@@ -389,7 +317,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Like this on Digg'
 	},
-	facebook: {
+	'facebook': {
 		html: function(cfg) {
 			// <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fdevelopers.facebook.com%2F&amp;layout=button_count&amp;show_faces=false&amp;width=25&amp;action=like&amp;colorscheme=light" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:25px; height:px"></iframe>
 			var elt = document.createElement('IFRAME'),
@@ -398,8 +326,8 @@ OPENLIKE.Sources = {
 				alert('clicked');
 			};
 			elt.src = 'http://www.facebook.com/plugins/like.php?href=' + encodeURIComponent(cfg.url) + '&amp;layout=button_count&amp;show_faces=false&amp;width=' + width + '&amp;action=like&amp;colorscheme=light';
-			OPENLIKE.util.update(elt, {scrolling: 'no', frameBorder: '0', allowTransparency: 'true'});
-			OPENLIKE.util.update(elt.style, {border: 'none', overflow: 'hidden', width: width+'px', height: '24px', padding: '1px 0 0 0'});
+			OPENLIKE.Util.update(elt, {scrolling: 'no', frameBorder: '0', allowTransparency: 'true'});
+			OPENLIKE.Util.update(elt.style, {border: 'none', overflow: 'hidden', width: width+'px', height: '24px', padding: '1px 0 0 0'});
 			return elt;
 		},
 		url: 'http://facebook.com',
@@ -409,7 +337,7 @@ OPENLIKE.Sources = {
 			return 'http://www.facebook.com/sharer.php?u=' + url + '&t=' + title;
 		}
 	},
-	google: {
+	'google': {
 		url: 'http://google.com',
 		basicLink: function(a, cfg) {
 			var url = encodeURIComponent(cfg.url),
@@ -420,7 +348,7 @@ OPENLIKE.Sources = {
 		title: 'Like this on Google Buzz',
 		xauth: 'googxauthdemo.appspot.com'
 	},
-	hunch: {
+	'hunch': {
 		url: 'http://hunch.com',
 		basicLink: function(a, cfg) {
 			var url = encodeURIComponent(cfg.url),
@@ -434,7 +362,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Add this to your Hunch taste profile'
 	},
-	reddit: {
+	'reddit': {
 		url: 'http://reddit.com/',
 		basicLink: function(a, cfg) {
 			var url = encodeURIComponent(cfg.url),
@@ -443,7 +371,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Like this on Reddit'
 	},
-	stumbleupon: {
+	'stumbleupon': {
 		url: 'http://www.stumbleupon.com/',
 		basicLink: function(a, cfg) {
 			var url = encodeURIComponent(cfg.url);
@@ -451,7 +379,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Like this on StumbleUpon'
 	},
-	yahoo: {
+	'yahoo': {
 		url: 'http://search.yahoo.com/',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -459,7 +387,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on Yahoo Buzz!'
 	},
-	blockbuster: {
+	'blockbuster': {
 		url: 'http://www.blockbuster.com/',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -467,7 +395,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on Blockbuster'
 	},
-	netflix: {
+	'netflix': {
 		url: 'http://www.netflix.com/',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -475,7 +403,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on Netflix'
 	},
-	twitter: {
+	'twitter': {
 		url: 'http://twitter.com',
 		basicLink: function(a, cfg) {
 			var msg = encodeURIComponent('I like this: ' + cfg.url + ' #openlike');
@@ -483,7 +411,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Tweet this like'
 	},
-	flixster: {
+	'flixster': {
 		url: 'http://flixster.com',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -491,7 +419,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on Flixster'
 	},
-	imdb: {
+	'imdb': {
 		url: 'http://imdb.com',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -499,7 +427,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on IMDb'
 	},
-	amazon: {
+	'amazon': {
 		url: 'http://amazon.com',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -516,7 +444,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on Amazon'
 	},
-	getglue: {
+	'getglue': {
 		url: 'http://getglue.com',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -524,7 +452,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on GetGlue'
 	},
-	goodreads: {
+	'goodreads': {
 		url: 'http://goodreads.com',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -532,7 +460,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on GoodReads'
 	},
-	shelfari: {
+	'shelfari': {
 		url: 'http://shelfari.com',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -540,7 +468,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on Shelfari'
 	},
-	librarything: {
+	'librarything': {
 		url: 'http://librarything.com',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);
@@ -548,7 +476,7 @@ OPENLIKE.Sources = {
 		},
 		title: 'Search this on LibraryThing'
 	},
-	weread: {
+	'weread': {
 		url: 'http://weread.com',
 		basicLink: function(a, cfg) {
 			var title = encodeURIComponent(cfg.title);

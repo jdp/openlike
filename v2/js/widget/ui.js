@@ -4,7 +4,7 @@ OPENLIKE.UI = new function() {
 	 * Opens the preference editor pop up window.
 	 */
 	this.openEditor = function(vertical, share_url) {
-		var win_features = OPENLIKE.util.serialize({
+		var win_features = OPENLIKE.Util.serialize({
 			'width':      600,
 			'height' :    300,
 			'menubar':    'no',
@@ -13,7 +13,7 @@ OPENLIKE.UI = new function() {
 			'scrollbars': 'no',
 			'status':     'no'
 		}, {separator: ','});
-		var params = OPENLIKE.util.serialize((function() {
+		var params = OPENLIKE.Util.serialize((function() {
 			var params = {
 				'vertical': vertical? vertical: 'default'
 			};
@@ -39,7 +39,7 @@ OPENLIKE.UI = new function() {
 		
 		for (i = 0; i < edit_items.length; i++) {
 			var item = edit_items[i];
-			var enabled = OPENLIKE.util.hasClass(item, 'enabled');
+			var enabled = OPENLIKE.Util.hasClass(item, 'enabled');
 			OPENLIKE.Preferences[enabled? 'show': 'hide'](vertical, item.getAttribute('data-service'));
 		}
 		

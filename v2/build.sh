@@ -1,6 +1,6 @@
 #!/bin/sh
 
-WIDGET_SRC="js/widget/xauth.js js/widget/widget.js js/widget/preferences.js js/widget/ui.js"
+WIDGET_SRC="js/widget/widget.js js/widget/xauth.js js/widget/util.js js/widget/preferences.js js/widget/ui.js"
 WIDGET="widget.js"
 PUBLISHER_SRC="js/publisher/openlike.js"
 PUBLISHER="openlike.js"

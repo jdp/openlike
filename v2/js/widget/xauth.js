@@ -1,4 +1,4 @@
-var xauth = new function() {
+OPENLIKE.XAuthHelper = new function() {
 	
 	/*
 	 * Takes an array of service names, and gives back the names of the given

@@ -3,11 +3,11 @@ if (!window['OPENLIKE']) {
 	window['OPENLIKE'] = new function() {
 	
 		this['Widget'] = function(cfg) {
-	
-			var cfg = cfg? cfg: {};
-			cfg.url = cfg.url? cfg.url: window.location.href;
 			
-			var assetHost = document.location.href.match(/localhost/)? 'http://localhost/~justin/openlike': 'http://openlike.org';
+			var cfg = cfg? cfg: {};
+			cfg['url'] = cfg['url']? cfg['url']: window.location.href;
+			
+			var assetHost = document.location.href.match(/openlike.org/)? 'http://openlike.org': document.location.href.match(/.*\/openlike/);
 	
 			// Grab Open Graph metadata if possible
 			var og = {};
@@ -20,9 +20,9 @@ if (!window['OPENLIKE']) {
 			}
 	
 			// Determine vertical, priorities: config, open graph, 'default'
-			cfg.vertical = (function() {		
-				if (cfg.vertical) {
-					return cfg.vertical;
+			cfg['vertical'] = (function() {		
+				if (cfg['vertical']) {
+					return cfg['vertical'];
 				}
 				else if (og['og:type']) {
 					return og['og:type'];
@@ -32,9 +32,9 @@ if (!window['OPENLIKE']) {
 			})();
 	
 			// Determine title, priorities: config, open graph, document.title
-			cfg.title = (function() {
-				if (cfg.title) {
-					return cfg.title;
+			cfg['title'] = (function() {
+				if (cfg['title']) {
+					return cfg['title'];
 				}
 				else if (og['og:title']) {
 					return og['og:title'];
@@ -47,7 +47,7 @@ if (!window['OPENLIKE']) {
 			var script = document.getElementsByTagName('SCRIPT');
 			script = script[script.length - 1];
 			iframe = document.createElement('IFRAME');
-			iframe.src = (assetHost+'/widget.html?url=' + encodeURIComponent(cfg.url) + '&title=' + encodeURIComponent(cfg.title) + '&vertical=' + encodeURIComponent(cfg.vertical)); 
+			iframe.src = (assetHost+'/widget.html?url=' + encodeURIComponent(cfg['url']) + '&title=' + encodeURIComponent(cfg['title']) + '&vertical=' + encodeURIComponent(cfg['vertical'])); 
 			script.parentNode.insertBefore(iframe, script);
 	
 		};

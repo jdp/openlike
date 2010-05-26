@@ -1,11 +1,11 @@
 OPENLIKE.Preferences = new function() {
 	
 	this.isNewUser = function() {
-		return !localStorage.openlike;
+		return !localStorage['openlike'];
 	}
 	
 	this.getStorage = function() {
-		return localStorage.openlike? JSON.parse(localStorage.openlike): {};
+		return localStorage['openlike']? JSON.parse(localStorage['openlike']): {};
 	};
 	
 	/*
