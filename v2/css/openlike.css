@@ -53,7 +53,6 @@
 .openlike ul li a.openlike-digg         { background-position:  -75px 0; }
 .openlike ul li a.openlike-google       { background-position: -100px 0; }
 .openlike ul li a.openlike-twitter      { background-position: -125px 0; }
-.openlike ul li a.openlike-facebook     { background-position: -400px 0; }
 .openlike ul li a.openlike-goodreads    { background-position: -175px 0; }
 .openlike ul li a.openlike-netflix      { background-position: -200px 0; }
 .openlike ul li a.openlike-amazon       { background-position: -225px 0; }
@@ -63,6 +62,9 @@
 .openlike ul li a.openlike-pandora      { background-position: -325px 0; }
 .openlike ul li a.openlike-gamespot     { background-position: -350px 0; }
 .openlike ul li a.openlike-imdb         { background-position: -375px 0; }
+.openlike ul li a.openlike-flixster     { background-position: -400px 0; }
+.openlike ul li a.openlike-getglue      { background-position: -425px 0; }
+.openlike ul li a.openlike-facebook     { background-position: -450px 0; }
 
 iframe.openlike {
 	border: none;

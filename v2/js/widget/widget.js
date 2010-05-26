@@ -323,7 +323,10 @@ OPENLIKE.Verticals = {
 		'twitter',
 		'blockbuster',
 		'netflix',
-		//'getglue',
+		'getglue',
+		'imdb',
+		'flixster',
+		'amazon',
 		'hunch'
 	],
 	
@@ -473,5 +476,46 @@ OPENLIKE.Sources = {
 			return 'http://twitter.com/home?status=' + msg;
 		},
 		title: 'Tweet this like'
+	},
+	flixster: {
+		url: 'http://flixster.com',
+		basicLink: function(a, cfg) {
+			var title = encodeURIComponent(cfg.title);
+			return 'http://flixster.com/search?q=' + title;
+		},
+		title: 'Search this on Flixster'
+	},
+	imdb: {
+		url: 'http://imdb.com',
+		basicLink: function(a, cfg) {
+			var title = encodeURIComponent(cfg.title);
+			return 'http://www.imdb.com/find?s=tt&q=' + title;
+		},
+		title: 'Search this on IMDb'
+	},
+	amazon: {
+		url: 'http://amazon.com',
+		basicLink: function(a, cfg) {
+			var title = encodeURIComponent(cfg.title);
+			var alias = (function() {
+				switch (cfg.vertical) {
+					case 'movie':
+					case 'tv_show':
+						return 'dvd';
+					default:
+						return 'aps';
+				}
+			})();
+			return 'http://www.amazon.com/s/ref=openlike?url=search-alias%3D'+alias+'&field-keywords='+title+'&x=0&y=0';
+		},
+		title: 'Search this on Amazon'
+	},
+	getglue: {
+		url: 'http://getglue.com',
+		basicLink: function(a, cfg) {
+			var title = encodeURIComponent(cfg.title);
+			return 'http://getglue.com/search?q=' + title;
+		},
+		title: 'Search this on GetGlue'
 	}
 };
