@@ -62,7 +62,6 @@ if (!window['OPENLIKE']) {
 							widget_iframe.style.width = msg['width'] + 'px';
 							break;
 					}
-					console.log(event);
 					return false;
 				}
 				window.addEventListener('message', onMessage, false);
