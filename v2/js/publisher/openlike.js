@@ -74,6 +74,7 @@ if (!window['OPENLIKE']) {
 			script = script[script.length - 1];
 			var iframe = document.createElement('IFRAME');
 			iframe.src = (assetHost+'/widget.html?url=' + encodeURIComponent(cfg['url']) + '&title=' + encodeURIComponent(cfg['title']) + '&vertical=' + encodeURIComponent(cfg['vertical'])); 
+			iframe.style.height = '33px';
 			iframe.className = 'openlike-widget';
 			iframe.id = 'openlike-widget-' + (widget_count + 1);
 			script.parentNode.insertBefore(iframe, script);

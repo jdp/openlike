@@ -76,7 +76,6 @@ OPENLIKE.buildWidget = function(cfg) {
 		wrapper.id = 'openlike-widget';
 		wrapper.className = cfg.editable? 'openlike clearfix edit': 'openlike clearfix';
 		wrapper.style.backgroundColor = 'transparent';
-		wrapper.style.height = '33px';
 		wrapper.setAttribute('data-vertical', cfg.vertical)
 		if (cfg.header) {
 			title = document.createElement('P');
@@ -245,7 +244,7 @@ OPENLIKE.buildWidget = function(cfg) {
 			var li_nodes = wrapper.childNodes[1].childNodes;
 			for (i = 0; i < li_nodes.length; i++) {
 				if (OPENLIKE.Util.hasClass(li_nodes[i], 'enabled')) {
-					ul_width += 30;
+					ul_width += 31;
 					if (OPENLIKE.Util.hasClass(li_nodes[i], 'openlike-facebook')) {
 						ul_width += 28;
 					}
