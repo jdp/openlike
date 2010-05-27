@@ -54,13 +54,11 @@ if (!window['OPENLIKE']) {
 					var widget_iframe = event.source.frameElement;
 					switch (msg['cmd']) {
 						case 'openlike::ready':
-							console.log('openlike widget '+widget_iframe.id+' ready!');
 							event.source.postMessage(JSON.stringify({
 								'cmd': 'openlike::requestResize'
 							}), event.origin);
 							break;
-						case 'openlike::resize':
-							console.log('resizing '+widget_iframe.id+' to '+msg['width']); 
+						case 'openlike::resize': 
 							widget_iframe.style.width = msg['width'] + 'px';
 							break;
 					}
