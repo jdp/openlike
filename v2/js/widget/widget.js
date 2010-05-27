@@ -130,6 +130,7 @@ OPENLIKE.buildWidget = function(cfg) {
 									var other_item = other_widget.childNodes[1].childNodes[i];
 									if (other_item.getAttribute('data-service') == this.parentNode.getAttribute('data-service')) {
 										OPENLIKE.Util.toggleClass(other_item, 'enabled');
+										OPENLIKE.Util.toggleClass(other_item, 'limbo');
 										window.opener.postMessage(JSON.stringify({
 											'cmd': 'openlike::requestResize'
 										}), OPENLIKE.assetHost);
@@ -186,6 +187,23 @@ OPENLIKE.buildWidget = function(cfg) {
 					window.close();
 				}
 			})(cfg);
+			window.onunload = function(event) {
+				var other_widget = window.opener.document.getElementById('openlike-widget');
+				var needs_resize = false;
+				for (var i = 0; i < other_widget.childNodes[1].childNodes.length; i++) {
+					var other_item = other_widget.childNodes[1].childNodes[i];
+					if (OPENLIKE.Util.hasClass(other_item, 'limbo')) {
+						OPENLIKE.Util.toggleClass(other_item, 'enabled');
+						OPENLIKE.Util.removeClass(other_item, 'limbo');
+						needs_resize = true;
+					}
+				}
+				if (needs_resize) {
+					window.opener.postMessage(JSON.stringify({
+						'cmd': 'openlike::requestResize'
+					}), OPENLIKE.assetHost);
+				}
+			}
 			var button_text = 'Save '+cfg.vertical+' Preferences and '+(cfg.share_url? 'Share': 'Close');
 			button.appendChild(document.createTextNode(button_text));
 			script.parentNode.insertBefore(button, script.nextSibling);
