@@ -19,12 +19,12 @@ var OPENLIKE = {
 OPENLIKE.buildWidget = function(cfg) {
 
 	var getParams = getGetParams();
-	var vertical  = (getParams['vertical'] && (getParams['vertical'] != ''))? getParams['vertical']: 'default';
+	var vertical  = (getParams['vertical'] && (getParams['vertical'] != ''))? getParams['vertical']: 'news';
 	var defaults  = {
 			editable: false,
 			url:      document.location.href,
 			title:    document.title,
-			vertical: 'default',
+			vertical: 'news',
 			header:   'OpenLike:',
 			css:       OPENLIKE.assetHost + '/v2/css/openlike.css',
 			s:         (function() {
@@ -129,6 +129,9 @@ OPENLIKE.buildWidget = function(cfg) {
 									var other_item = other_widget.childNodes[1].childNodes[i];
 									if (other_item.getAttribute('data-service') == this.parentNode.getAttribute('data-service')) {
 										OPENLIKE.Util.toggleClass(other_item, 'enabled');
+										window.opener.postMessage(JSON.stringify({
+											'cmd': 'openlike::requestResize'
+										}), OPENLIKE.assetHost);
 										break;
 									}
 								}
@@ -197,10 +200,61 @@ OPENLIKE.buildWidget = function(cfg) {
 			button.appendChild(document.createTextNode('edit'));
 			wrapper.appendChild(button);
 		}
-	
+		
+		// Attach a message event listener
+		function onMessage(event) {
+			var msg = JSON.parse(event.data);
+			if (msg['cmd']) {
+				switch (msg['cmd']) {
+					case 'openlike::requestResize':
+						window.parent.postMessage(JSON.stringify({
+							'cmd': 'openlike::resize',
+							'width': getWrapperWidth()
+						}), '*');
+						break;
+				}
+			}
+		}
+		
+		window.addEventListener('message', onMessage, false);
 
-		// Last step of the build process: attach the widget to the page
+		// Attach the widget to the page
 		script.parentNode.insertBefore(wrapper, script);
+		
+		// Let parent window know widget is built
+		window.parent.postMessage(JSON.stringify({
+			'cmd': 'openlike::ready'
+		}), '*');
+		
+		/*
+		 * Returns the width of the widget wrapper in pixels.
+		 * @access local to OPENLIKE.buildWidget
+		 * @return Integer width of the widget in pixels
+		 * @todo Use less naive approach
+		 */
+		function getWrapperWidth() {
+			var wrapper = document.getElementById('openlike-widget');
+			// Resize the iframe
+			var widget_width = 0;
+			// the header text
+			var p_width = wrapper.childNodes[0].offsetWidth + 5;
+			// the service icon list
+			var ul_width = 0;
+			var li_nodes = wrapper.childNodes[1].childNodes;
+			for (i = 0; i < li_nodes.length; i++) {
+				if (OPENLIKE.Util.hasClass(li_nodes[i], 'enabled')) {
+					ul_width += 30;
+					if (OPENLIKE.Util.hasClass(li_nodes[i], 'openlike-facebook')) {
+						ul_width += 28;
+					}
+				}
+			}
+			// the edit button
+			var a_width = wrapper.childNodes[2].offsetWidth + 5;
+			// size up widget
+			return (widget_width = p_width + ul_width + a_width + 15);
+		}
+		
 		wrapper = title = list = li = script = source = null;
 	}
 
@@ -208,7 +262,7 @@ OPENLIKE.buildWidget = function(cfg) {
 	// in this order: preferred, xauthed, viewed, default
 	var preferred_services = OPENLIKE.Preferences.get(cfg.vertical);
 	var xauthed_services = OPENLIKE.XAuthHelper.getAvailableServices(cfg.s);
-	var default_services = OPENLIKE.Verticals[cfg.vertical]? OPENLIKE.Verticals[cfg.vertical]: OPENLIKE.Verticals['default'];
+	var default_services = (OPENLIKE.Verticals[cfg.vertical]? OPENLIKE.Verticals[cfg.vertical]: OPENLIKE.Verticals['news']).slice(0, 3);
 	if (preferred_services.length) {
 		build(preferred_services);
 	}
@@ -246,6 +300,7 @@ OPENLIKE.Verticals = {
 	'news': [
 		'facebook',
 		'twitter',
+		'digg',
 		'google',
 		'yahoo',
 		'reddit'
@@ -290,15 +345,6 @@ OPENLIKE.Verticals = {
 		'imdb',
 		'getglue',
 		'hunch'
-	],
-
-	'default': [
-		'google',
-		'facebook',
-		'hunch',
-		'digg',
-		'reddit',
-		'stumbleupon'
 	]
 
 };

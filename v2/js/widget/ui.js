@@ -15,7 +15,7 @@ OPENLIKE.UI = new function() {
 		}, {separator: ','});
 		var params = OPENLIKE.Util.serialize((function() {
 			var params = {
-				'vertical': vertical? vertical: 'default'
+				'vertical': vertical? vertical: 'news'
 			};
 			if (share_url) {
 				params.share_url = share_url;

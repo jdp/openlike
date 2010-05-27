@@ -54,7 +54,7 @@ javascript:void(
 						case 'digg.com':
 							return 'news';
 						default:
-							return 'default';
+							return 'news';
 					}
 				}
 			})();
