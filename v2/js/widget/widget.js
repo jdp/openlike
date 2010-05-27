@@ -75,6 +75,8 @@ OPENLIKE.buildWidget = function(cfg) {
 		wrapper = document.createElement('DIV');
 		wrapper.id = 'openlike-widget';
 		wrapper.className = cfg.editable? 'openlike clearfix edit': 'openlike clearfix';
+		wrapper.style.backgroundColor = 'transparent';
+		wrapper.style.height = '33px';
 		wrapper.setAttribute('data-vertical', cfg.vertical)
 		if (cfg.header) {
 			title = document.createElement('P');
