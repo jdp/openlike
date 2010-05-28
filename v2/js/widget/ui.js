@@ -43,6 +43,14 @@ OPENLIKE.UI = new function() {
 			OPENLIKE.Preferences[enabled? 'show': 'hide'](vertical, item.getAttribute('data-service'));
 		}
 		
+		// Since preferences are saved, we can take everything out of limbo
+		if (window.opener) {
+			var other_widget = window.opener.document.getElementById('openlike-widget');
+			for (var i = 0; i < other_widget.childNodes[1].childNodes.length; i++) {
+				OPENLIKE.Util.removeClass(other_widget.childNodes[1].childNodes[i], 'limbo');
+			}
+		}
+		
 	}
 	
 };
