@@ -285,7 +285,7 @@ OPENLIKE.buildWidget = function(cfg) {
 	if (preferred_services.length) {
 		build(preferred_services);
 	}
-	else if (xauthed_services.length) {
+	else if (xauthed_services.length && (typeof window['XAuth'] != 'undefined')) {
 		OPENLIKE.XAuthHelper.checkServices(xauthed_services, function(verified_services) {
 			if (verified_services.length) {
 				build(verified_services);
