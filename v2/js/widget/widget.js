@@ -271,7 +271,7 @@ OPENLIKE.buildWidget = function(cfg) {
 			// the edit button
 			var a_width = wrapper.childNodes[2].offsetWidth + 5;
 			// size up widget
-			return (widget_width = p_width + ul_width + a_width + 15);
+			return (widget_width = p_width + ul_width + a_width + 20);
 		}
 		
 		wrapper = title = list = li = script = source = null;
