@@ -320,6 +320,7 @@ OPENLIKE.Verticals = {
 		'facebook',
 		'twitter',
 		'digg',
+		'myspace',
 		'google',
 		'yahoo',
 		'reddit'
@@ -334,10 +335,13 @@ OPENLIKE.Verticals = {
 		'imdb',
 		'flixster',
 		'amazon',
-		'hunch'
+		'hunch',
+		'myspace'
 	],
 
 	'book': [
+		'facebook',
+		'twitter',
 		'amazon',
 		'goodreads',
 		'shelfari',
@@ -348,6 +352,8 @@ OPENLIKE.Verticals = {
 	],
 
 	'music': [
+		'facebook',
+		'twitter',
 		'lastfm',
 		'pandora',
 		'getglue',
@@ -355,12 +361,16 @@ OPENLIKE.Verticals = {
 	],
 
 	'video_game': [
+		'facebook',
+		'twitter',
 		'gamespot',
 		'getglue',
 		'hunch'
 	],
 
 	'tv_show': [
+		'facebook',
+		'twitter',
 		'imdb',
 		'getglue',
 		'hunch'
@@ -427,6 +437,19 @@ OPENLIKE.Sources = {
 		},
 		title: 'Add this to your Hunch taste profile'
 	},
+	'myspace': {
+		url: 'http://myspace.com',
+		basicLink: function(a, cfg) {
+			var url = encodeURIComponent(cfg.url),
+				title = encodeURIComponent(cfg.title);
+			return 'http://www.myspace.com/Modules/PostTo/Pages/?u=' + url + '&t=' + title;
+		},
+		popup: {
+			target: '_blank',
+			attrs: 'width=450,height=440'
+		},
+		title: 'Like this on MySpace'
+	},
 	'reddit': {
 		url: 'http://reddit.com/',
 		basicLink: function(a, cfg) {
@@ -450,7 +473,7 @@ OPENLIKE.Sources = {
 			var title = encodeURIComponent(cfg.title);
 			return 'http://search.yahoo.com/search?p=' + title + '&fr=orion&ygmasrchbtn=Web+Search';
 		},
-		title: 'Search this on Yahoo Buzz!'
+		title: 'Like this on Yahoo Buzz!'
 	},
 	'blockbuster': {
 		url: 'http://www.blockbuster.com/',
@@ -515,7 +538,7 @@ OPENLIKE.Sources = {
 			var title = encodeURIComponent(cfg.title);
 			return 'http://getglue.com/search?q=' + title;
 		},
-		title: 'Search this on GetGlue'
+		title: 'Like this on GetGlue'
 	},
 	'goodreads': {
 		url: 'http://goodreads.com',
