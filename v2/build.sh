@@ -1,22 +1,37 @@
 #!/bin/sh
 
-WIDGET_SRC="js/widget/widget.js js/widget/xauth.js js/widget/util.js js/widget/preferences.js js/widget/ui.js"
-WIDGET="widget.js"
-PUBLISHER_SRC="js/publisher/openlike.js"
-PUBLISHER="openlike.js"
+WIDGET_SRC="common/services.js common/preferences.js widget/js/widget.js widget/js/util.js widget/js/ui.js"
+WIDGET="openlike.js"
+WIDGET_CSS="widget/css/openlike.css"
+WIDGET_CSS_OUT="openlike.css"
 CURL=curl
 CLOSURE="closure-compiler.appspot.com/compile"
+COMP_LVL="SIMPLE_OPTIMIZATIONS"
 
-echo "Building $WIDGET"
-cat $WIDGET_SRC > composite
-$CURL --data-urlencode js_code@composite --data "output_format=text&output_info=compiled_code&compilation_level=SIMPLE_OPTIMIZATIONS" $CLOSURE > $WIDGET
+# Uses Closure Compiler to minify Javascript
+# Usage:
+#    minify <outfile> <infiles>
+minify()
+{
+	outfile=$1
+	shift $@
+	infiles=$*
+	cat $infiles > $outfile
+	$CURL --data-urlencode js_code@$outfile --data "output_format=text&output_info=compiled_code&compilation_level=$COMP_LVL" $CLOSURE > $outfile
+}
 
-echo "Building $PUBLISHER"
-cat $PUBLISHER_SRC > composite
-$CURL --data-urlencode js_code@composite --data "output_format=text&output_info=compiled_code&compilation_level=ADVANCED_OPTIMIZATIONS" $CLOSURE > $PUBLISHER
+while getopts "r" o
+do
+	case "$o" in
+		r) RELEASE="true";;
+	esac
+done
 
-echo "Cleaning up"
-rm -f composite
+echo "Building $WIDGET_SRC to $WIDGET"
+cat $WIDGET_SRC > $WIDGET
+
+echo "Minifying $WIDGET_CSS to $WIDGET_CSS_OUT"
+cat $WIDGET_CSS > $WIDGET_CSS_OUT
 
 echo "Done"
 
