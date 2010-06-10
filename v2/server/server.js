@@ -17,9 +17,12 @@ var OPENLIKE = (function(ns) {
 		 * Response object has an array of services.
 		 * If the user doesn't have any preferred services, return the first 3 available.
 		 */
-		'openlike::getServices': function(request_object, origin_hostname) {
-			var response = {},
-				request = request_object;
+		'openlike::getServices': function(request, origin_hostname) {
+			var response = {};
+			if (!request['widget-id']) {
+				response['error'] = 'no widget id given';
+				return response;
+			}
 			if (!request['vertical']) {
 				response['error'] = 'no vertical given';
 				return response;
@@ -33,6 +36,7 @@ var OPENLIKE = (function(ns) {
 				services = ns.Verticals[request['vertical']].slice(0, 3);
 			}
 			response['id'] = request['id'];
+			response['widget-id'] = request['widget-id'];
 			response['cmd'] = 'openlike::services';
 			response['services'] = services;
 			return response;

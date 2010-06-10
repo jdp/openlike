@@ -69,6 +69,9 @@ window['OPENLIKE'] = (function(ns) {
 	function onMessage(event) {
 		var msg = JSON.parse(event.data);
 		console.log('got a message for widget', msg);
+		if (msg['error']) {
+			console.error('error on request', msg['error']);
+		}
 		switch (msg['cmd']) {
 			// OpenLike's server iframe is open and ready to receive requests.
 			case 'openlike::ready':
@@ -81,14 +84,13 @@ window['OPENLIKE'] = (function(ns) {
 			
 			// OpenLike server has sent a list of services to a widget
 			case 'openlike::services':
-				ns.UI.enableServices(msg['services']);
+				ns.UI.enableServices(document.getElementById(msg['widget-id']), msg['services']);
 				break;
 		}
 		return false;
 	}
 
 	/*
-	 * Called on OpenLike's webspace, not seen by publishers or users.
 	 * Builds an unordered list of OpenLike sources, and depending on context, can make them editable.
 	 * @param Object cfg Configuration for the widget. Available properties:
 	 * @option String header   the header text (or none) to give the widget (default 'Like this:')
@@ -126,10 +128,13 @@ window['OPENLIKE'] = (function(ns) {
 			}
 		}
 		
-		// Determine vertical, priorities: config, open graph, 'default'
+		// Determine vertical, priorities: config, get params, open graph, 'default'
 		cfg.vertical = (function() {		
 			if (cfg.vertical) {
 				return cfg.vertical;
+			}
+			else if (getParams['vertical']) {
+				return getParams['vertical'];
 			}
 			else if (og['og:type']) {
 				return og['og:type'];
@@ -172,6 +177,9 @@ window['OPENLIKE'] = (function(ns) {
 		 * @param Array<String> enabled_services Services that are enabled and available in the widget
 		 */
 		function build(enabled_services) {
+			
+			var widget_count = document.getElementsByClassName('openlike').length;
+			var widget_id = 'openlike-widget-' + (widget_count + 1);
 	
 			// Add CSS
 			if (cfg.css) {
@@ -197,13 +205,15 @@ window['OPENLIKE'] = (function(ns) {
 				title.innerHTML = ns.Util.escape(cfg.header);
 				wrapper.appendChild(title);
 			}
+			
+			var sources = ns.Verticals[cfg.vertical];
 
 			// Build the list of services for the widget
 			// All services are present in the list, but some are invisible if not enabled
 			list = document.createElement('UL');
-			for (i = 0, len = cfg.s.length; i < len; i++) {
-				if (source = ns.Sources[cfg.s[i]]) {
-					source = ns.prepSource(cfg.s[i], source);
+			for (i = 0, len = sources.length; i < len; i++) {
+				if (source = ns.Sources[sources[i]]) {
+					source = ns.prepSource(sources[i], source);
 					li = document.createElement('LI');
 					// Some sources (Facebook Like :/) require custom HTML to work
 					// Only show the custom HTML when not in edit mode
@@ -225,10 +235,10 @@ window['OPENLIKE'] = (function(ns) {
 						}
 						a.onclick = (function(src) {
 							return function(e) {
-								var widget = document.getElementById('openlike-widget');
+								var widget = document.getElementById(widget_id);
 								// If no preferences are available and not in edit mode already, ENGAGE EDIT MODE
 								if (ns.Preferences.isNewUser() && !cfg.editable) {
-									ns.UI.openEditor(cfg.vertical, (e.srcElement || e.target).href);
+									ns.UI.openEditor(widget_id, cfg.vertical, (e.srcElement || e.target).href);
 									e.preventDefault();
 									return false;
 								}
@@ -268,6 +278,7 @@ window['OPENLIKE'] = (function(ns) {
 			if (cfg.editable) {
 				// Append the save button if EDIT MODE ENGAGED
 				button.id = 'openlike-save-btn';
+				button.setAttribute('data-widget-id', cfg.widget_id);
 				if (ns.Preferences.isNewUser()) {
 					ns.Util.addClass(button, 'enabled');
 				}
@@ -295,7 +306,7 @@ window['OPENLIKE'] = (function(ns) {
 				button.id = 'openlike-edit-btn';
 				button.href = '#';
 				button.onclick = function(e) {
-					ns.UI.openEditor(cfg.vertical);
+					ns.UI.openEditor(widget_id, cfg.vertical);
 					return false;
 				}
 				button.appendChild(document.createTextNode('edit'));
@@ -303,13 +314,17 @@ window['OPENLIKE'] = (function(ns) {
 			}
 		
 			// More than one widget can be on the page, so a unique ID is assigned based on how many there are
-			var widget_count = document.getElementsByClassName('openlike').length;
+			
 			wrapper.setAttribute('id', 'openlike-widget-' + (widget_count + 1));
 			
 			// Attach the widget to the page
 			script.parentNode.insertBefore(wrapper, script);
 			
-			queueRequest({'cmd': 'openlike::getServices', 'vertical': cfg.vertical});
+			queueRequest({
+				'widget-id': wrapper.getAttribute('id'),
+				'cmd': 'openlike::getServices',
+				'vertical': cfg.vertical
+			});
 		
 			wrapper = title = list = li = script = source = null;
 		}
