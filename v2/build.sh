@@ -4,6 +4,8 @@ WIDGET_SRC="common/services.js common/preferences.js widget/js/widget.js widget/
 WIDGET="openlike.js"
 WIDGET_CSS="widget/css/openlike.css"
 WIDGET_CSS_OUT="openlike.css"
+SERVER_SRC="common/services.js common/preferences.js server/server.js"
+SERVER_HTML="../server.html"
 CURL=curl
 CLOSURE="closure-compiler.appspot.com/compile"
 COMP_LVL="SIMPLE_OPTIMIZATIONS"
@@ -32,6 +34,11 @@ cat $WIDGET_SRC > $WIDGET
 
 echo "Minifying $WIDGET_CSS to $WIDGET_CSS_OUT"
 cat $WIDGET_CSS > $WIDGET_CSS_OUT
+
+echo "Building server"
+echo "<!doctype html><script type=\"text/javascript\">" > $SERVER_HTML
+cat $SERVER_SRC >> $SERVER_HTML
+echo "</script>" >> $SERVER_HTML
 
 echo "Done"
 

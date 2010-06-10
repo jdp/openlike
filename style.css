@@ -395,3 +395,19 @@ clear: both;
 
 /* @end */
 
+/* @edit_page */
+
+#openlike-editor h2 {
+	text-align: left;
+	background-color: #d1daec;
+	margin: 0;
+	padding: 16px;
+}
+
+#openlike-editor p {
+	margin: 16px 16px 0 16px;
+}
+
+#openlike-editor .wrapper {
+	margin: 16px;
+}

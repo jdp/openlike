@@ -6,6 +6,86 @@ window['OPENLIKE'] = (function(ns) {
 	ns.assetHost = document.location.href.match(/openlike.org/)?
 	               'http://openlike.org':
 	               document.location.href.match(/.*\/openlike/);
+	
+	ns.serverUrl = ns.assetHost + '/server.html';
+	
+	ns.elCache = {
+		iframe: null,
+		postWindow: null
+	};
+	
+	ns.requests = {
+		id: 0,
+		open: {},
+		queue: []
+	};
+	
+	function makePendingRequests() {
+		for(var i = 0; i < ns.requests.queue.length; i++) {
+			makeRequest(ns.requests.open[ns.requests.queue.shift()]);
+		}
+	}
+
+	function makeRequest(request_object) {
+		ns.elCache.postWindow.postMessage(JSON.stringify(request_object), ns.serverUrl);
+	}
+
+	function queueRequest(request_object) {
+		request_object.id = ns.requests.id;
+		ns.requests.open[ns.requests.id++] = request_object;
+
+		if(!ns.elCache.iframe || !ns.elCache.postWindow) {
+			ns.requests.queue.push(request_object.id);
+			setupWindow();
+		} else {
+			makeRequest(request_object);
+		}
+	}
+	
+	function setupWindow() {
+		if(ns.elCache.iframe || ns.elCache.postWindow) {
+			return;
+		}
+
+		// Create hidden iframe dom element
+		ns.elCache.iframe = document.createElement('iframe');
+		var iframe_style = ns.elCache.iframe.style;
+		iframe_style.position = 'absolute';
+		iframe_style.left = iframe_style.top = '-999px';
+
+		document.body.appendChild(ns.elCache.iframe);
+		
+		// Setup postMessage event listeners
+		if (window.addEventListener) {
+			window.addEventListener('message', onMessage, false);
+		}
+		else if (window.attachEvent) {
+			window.attachEvent('onmessage', onMessage);
+		}
+
+		ns.elCache.iframe.src = ns.serverUrl;
+	}
+	
+	function onMessage(event) {
+		var msg = JSON.parse(event.data);
+		console.log('got a message for widget', msg);
+		switch (msg['cmd']) {
+			// OpenLike's server iframe is open and ready to receive requests.
+			case 'openlike::ready':
+				if (ns.elCache.postWindow) {
+					return false;
+				}
+				ns.elCache.postWindow = ns.elCache.iframe.contentWindow;
+				setTimeout(makePendingRequests, 1);
+				break;
+			
+			// OpenLike server has sent a list of services to a widget
+			case 'openlike::services':
+				ns.UI.enableServices(msg['services']);
+				break;
+		}
+		return false;
+	}
 
 	/*
 	 * Called on OpenLike's webspace, not seen by publishers or users.
@@ -70,8 +150,6 @@ window['OPENLIKE'] = (function(ns) {
 				return document.title;
 			}
 		})();
-		
-		console.log('config:', cfg);
 
 		// Returns an object representation of the GET parameters
 		function getGetParams() {
@@ -135,9 +213,6 @@ window['OPENLIKE'] = (function(ns) {
 					else {
 						a = document.createElement('A');
 						ns.Util.addClass(a, source.klass);
-						if (enabled_services.indexOf(source.name) > -1) {
-							ns.Util.addClass(a, 'enabled');
-						}
 						a.setAttribute('data-service', source.name);
 						a.href = '#';
 						a.innerHTML = ns.Util.escape(source.name);
@@ -161,19 +236,6 @@ window['OPENLIKE'] = (function(ns) {
 								if (ns.Util.hasClass(widget, 'edit') && cfg.editable) {
 									// Toggle the button on the edit window
 									ns.Util.toggleClass(this.parentNode, 'enabled');
-									// Get the corresponding button on the content window and toggle it too
-									var other_widget = window.opener.document.getElementById('openlike-widget');
-									for (var i = 0; i < other_widget.childNodes[1].childNodes.length; i++) {
-										var other_item = other_widget.childNodes[1].childNodes[i];
-										if (other_item.getAttribute('data-service') == this.parentNode.getAttribute('data-service')) {
-											ns.Util.toggleClass(other_item, 'enabled');
-											ns.Util.toggleClass(other_item, 'limbo');
-											window.opener.postMessage(JSON.stringify({
-												'cmd': 'openlike::requestResize'
-											}), ns.assetHost);
-											break;
-										}
-									}
 									// Re-enable the save button
 									ns.Util.addClass(document.getElementById('openlike-save-btn'), 'enabled');
 									e.preventDefault();
@@ -194,9 +256,6 @@ window['OPENLIKE'] = (function(ns) {
 						})(source);
 					}
 					ns.Util.addClass(li, source.klass);
-					if (enabled_services.indexOf(source.name) > -1) {
-						ns.Util.addClass(li, 'enabled');
-					}
 					li.setAttribute('data-service', source.name);
 					li.appendChild(a);
 					list.appendChild(li);
@@ -225,21 +284,7 @@ window['OPENLIKE'] = (function(ns) {
 					}
 				})(cfg);
 				window.onunload = function(event) {
-					var other_widget = window.opener.document.getElementById('openlike-widget');
-					var needs_resize = false;
-					for (var i = 0; i < other_widget.childNodes[1].childNodes.length; i++) {
-						var other_item = other_widget.childNodes[1].childNodes[i];
-						if (ns.Util.hasClass(other_item, 'limbo')) {
-							ns.Util.toggleClass(other_item, 'enabled');
-							ns.Util.removeClass(other_item, 'limbo');
-							needs_resize = true;
-						}
-					}
-					if (needs_resize) {
-						window.opener.postMessage(JSON.stringify({
-							'cmd': 'openlike::requestResize'
-						}), ns.assetHost);
-					}
+					// refresh available buttons
 				}
 				var button_text = 'Save '+cfg.vertical+' Preferences and '+(cfg.share_url? 'Share': 'Close');
 				button.appendChild(document.createTextNode(button_text));
@@ -258,31 +303,13 @@ window['OPENLIKE'] = (function(ns) {
 			}
 		
 			// More than one widget can be on the page, so a unique ID is assigned based on how many there are
-			var widget_count = document.getElementsByClassName('openlike-widget').length;
+			var widget_count = document.getElementsByClassName('openlike').length;
+			wrapper.setAttribute('id', 'openlike-widget-' + (widget_count + 1));
 			
-			// Message listener should only be attached the first time the widget is added
-			if (widget_count == 0) {
-				// Receive messages from widgets messages
-				function onMessage(event) {
-					var msg = JSON.parse(event.data);
-					var widget_iframe = event.source.frameElement;
-					switch (msg['cmd']) {
-						case 'openlike::ready':
-							event.source.postMessage(JSON.stringify({
-								'cmd': 'openlike::requestResize'
-							}), event.origin);
-							break;
-						case 'openlike::resize': 
-							widget_iframe.style.width = msg['width'] + 'px';
-							break;
-					}
-					return false;
-				}
-				window.addEventListener('message', onMessage, false);
-			}
-
 			// Attach the widget to the page
 			script.parentNode.insertBefore(wrapper, script);
+			
+			queueRequest({'cmd': 'openlike::getServices', 'vertical': cfg.vertical});
 		
 			wrapper = title = list = li = script = source = null;
 		}
