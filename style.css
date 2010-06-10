@@ -173,7 +173,7 @@ p.quiet   { color: #666; }
 #site-name { width: 300px; padding-left: 25px; }
 #site-name a {
 	text-indent: -950em;
-	background: url(/logo.png) no-repeat 0 0;
+	background: url(logo.png) no-repeat 0 0;
 	width: 300px;
 	height: 82px;
 	display: block;
